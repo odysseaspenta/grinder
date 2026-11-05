@@ -96,6 +96,14 @@ final class JythonScriptEngine implements ScriptEngine {
     }
 
     m_systemState = new PySystemState();
+
+    // As the Python interpreter does, make sys.argv[0] the script path.
+    // Jython's own warnings module reads sys.argv[0] when it reports a
+    // warning raised at module level, and fails with IndexError if argv is
+    // empty.
+    m_systemState.argv.clear();
+    m_systemState.argv.append(new PyString(script.getFile().getPath()));
+
     m_interpreter = new PythonInterpreter(null, m_systemState);
 
     m_interpreter.exec("class ___DieQuietly___: pass");

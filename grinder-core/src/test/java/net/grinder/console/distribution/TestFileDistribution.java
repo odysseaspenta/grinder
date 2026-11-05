@@ -150,7 +150,11 @@ public class TestFileDistribution extends AbstractFileTestCase {
     assertTrue(file2.setLastModified(file1.lastModified() + 5000));
 
     fileDistribution.scanDistributionFiles();
-    assertEquals(file1.lastModified(),
+    // The directory changed when file1 was recreated, possibly a millisecond
+    // or two before file1's own time stamp, so the earliest change is the
+    // smaller of the two.
+    assertEquals(Math.min(directory.getFile().lastModified(),
+                          file1.lastModified()),
                  agentCacheStateStubFactory.getEarliestOutOfDateTime());
 
     final CallData filesChangedCall2 =

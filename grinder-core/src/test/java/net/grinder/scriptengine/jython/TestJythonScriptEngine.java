@@ -135,6 +135,18 @@ public class TestJythonScriptEngine extends AbstractJUnit4FileTestCase {
     }
   }
 
+  @Test public void testScriptPathIsArgv0() throws Exception {
+    createFile(m_script.getFile(),
+               "import sys",
+               "assert len(sys.argv) == 1, sys.argv",
+               "assert sys.argv[0] == r'" +
+                 m_script.getFile().getPath() + "', sys.argv[0]",
+               "class TestRunner:pass");
+
+    final ScriptEngine scriptEngine = new JythonScriptEngine(m_script);
+    scriptEngine.shutdown();
+  }
+
   @Test public void testInitialisePathScriptWorkingDirectory()
       throws Exception {
     final File directory = new File(getDirectory(), "bah/foo");
