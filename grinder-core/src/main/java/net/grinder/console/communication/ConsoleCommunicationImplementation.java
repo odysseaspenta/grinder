@@ -21,6 +21,7 @@
 
 package net.grinder.console.communication;
 
+import javax.annotation.PreDestroy;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.System;
@@ -253,6 +254,7 @@ public final class ConsoleCommunicationImplementation
   /**
    * Shut down communication.
    */
+  @PreDestroy
   public void shutdown() {
     m_shutdown.set(true);
     m_processing.set(false);
