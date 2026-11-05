@@ -1,0 +1,21 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - run: mvn -B -DskipTests -Dmaven.javadoc.skip=true package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: grinder-binary
+          path: grinder/target/*-binary.zip
