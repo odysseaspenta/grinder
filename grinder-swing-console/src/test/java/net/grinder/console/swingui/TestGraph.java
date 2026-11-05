@@ -22,6 +22,8 @@
 
 package net.grinder.console.swingui;
 
+import java.awt.GraphicsEnvironment;
+
 import junit.framework.TestCase;
 
 import java.awt.BorderLayout;
@@ -57,7 +59,7 @@ public class TestGraph extends TestCase {
   private JFrame m_frame;
 
   protected void setUp() throws Exception {
-    if (!Boolean.getBoolean("build.travis")) {
+    if (!GraphicsEnvironment.isHeadless()) {
       m_frame = new JFrame("Test Graph");
     }
   }
@@ -74,7 +76,7 @@ public class TestGraph extends TestCase {
 
   public void testRamp() throws Exception {
 
-    if (!Boolean.getBoolean("build.travis")) {
+    if (!GraphicsEnvironment.isHeadless()) {
       final Graph graph = new Graph(25);
       createUI(graph);
 
@@ -96,7 +98,7 @@ public class TestGraph extends TestCase {
 
   public void testRandom() throws Exception {
 
-    if (!Boolean.getBoolean("build.travis")) {
+    if (!GraphicsEnvironment.isHeadless()) {
       final Graph graph = new Graph(100);
       createUI(graph);
 
@@ -111,7 +113,7 @@ public class TestGraph extends TestCase {
 
   public void testLabelledGraph() throws Exception {
 
-    if (!Boolean.getBoolean("build.travis")) {
+    if (!GraphicsEnvironment.isHeadless()) {
       final StatisticsServices statisticsServices =
               StatisticsServicesImplementation.getInstance();
 

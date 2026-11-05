@@ -21,6 +21,8 @@
 
 package net.grinder.console.swingui;
 
+import java.awt.GraphicsEnvironment;
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -53,7 +55,7 @@ public class TestFrameBounds extends AbstractFileTestCase {
   }
 
   public void testFrameBounds() throws Exception {
-    if (!Boolean.getBoolean("build.travis")) {
+    if (!GraphicsEnvironment.isHeadless()) {
 
       final ConsoleProperties properties =
               new ConsoleProperties(s_resources, m_file);

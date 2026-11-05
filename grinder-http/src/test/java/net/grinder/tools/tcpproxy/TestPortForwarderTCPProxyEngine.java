@@ -25,8 +25,8 @@ import static net.grinder.testutility.SocketUtilities.findFreePort;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.contains;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -79,7 +79,7 @@ public class TestPortForwarderTCPProxyEngine {
   @Before public void setUp() throws Exception {
     m_localPort = findFreePort();
 
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     resetLogger();
   }

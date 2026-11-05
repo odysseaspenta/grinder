@@ -59,7 +59,7 @@ public class TestExternalLogger {
   @Mock private Marker m_marker;
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test public void testGetName() {

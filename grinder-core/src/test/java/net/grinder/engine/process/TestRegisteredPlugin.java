@@ -53,7 +53,7 @@ public class TestRegisteredPlugin {
   @Mock private ThreadContext m_threadContext;
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test public void testConstructorAndSimpleAccessors() throws Exception {

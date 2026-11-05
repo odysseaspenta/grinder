@@ -60,7 +60,7 @@ public class TestConnectionHandlerFactoryImplementation {
       false);
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test public void testFactory() {

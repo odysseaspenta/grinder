@@ -89,7 +89,7 @@ public class TestDistributedBarriers {
   private int m_port;
 
   @Before public void setup() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     final ConsoleProperties properties =
       new ConsoleProperties(m_resources, new File(""));

@@ -70,7 +70,7 @@ public class TestScriptEngineContainer extends AbstractJUnit4FileTestCase {
   private ScriptLocation m_pyScript;
 
   @Before public void initialise() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     m_pyScript = new ScriptLocation(new File("foo.py"));
   }
 

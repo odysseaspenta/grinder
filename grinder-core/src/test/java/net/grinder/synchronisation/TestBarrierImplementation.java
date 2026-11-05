@@ -70,7 +70,7 @@ public class TestBarrierImplementation {
   private @Mock BarrierIdentity.Factory m_identityFactory;
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(m_identityFactory.next()).thenReturn(ID1, ID2, ID3);
   }

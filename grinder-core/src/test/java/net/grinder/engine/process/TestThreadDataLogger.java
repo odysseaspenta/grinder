@@ -23,7 +23,7 @@ package net.grinder.engine.process;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import net.grinder.common.StubTest;
 import net.grinder.statistics.StatisticsIndexMap;
@@ -61,7 +61,7 @@ public class TestThreadDataLogger {
   private StatisticsIndexMap.DoubleIndex s_userDouble0Index;
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     final StatisticsIndexMap indexMap =
       m_statisticsServices.getStatisticsIndexMap();

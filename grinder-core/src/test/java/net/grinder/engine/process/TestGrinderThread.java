@@ -60,7 +60,7 @@ public class TestGrinderThread extends AbstractJUnit4FileTestCase {
 
 
   @Before public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(m_workerRunnableFactory.create()).thenReturn(m_workerRunnable);
   }

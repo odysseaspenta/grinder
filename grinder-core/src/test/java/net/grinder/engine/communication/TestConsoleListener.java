@@ -54,7 +54,7 @@ public class TestConsoleListener {
   @Mock private Logger m_logger;
 
   @Before public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test public void testConstruction() throws Exception {

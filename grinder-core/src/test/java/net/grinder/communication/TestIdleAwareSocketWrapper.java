@@ -60,7 +60,7 @@ public class TestIdleAwareSocketWrapper {
   }
 
   @Before public void createSocket() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     m_socket = new Socket(InetAddress.getByName(null), s_acceptor.getPort());
   }

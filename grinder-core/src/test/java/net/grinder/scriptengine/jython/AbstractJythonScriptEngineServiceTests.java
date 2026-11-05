@@ -64,7 +64,7 @@ public abstract class AbstractJythonScriptEngineServiceTests
 
   @Before
   public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     m_pyScript =
       new ScriptLocation(new Directory(getDirectory()), new File("some.py"));

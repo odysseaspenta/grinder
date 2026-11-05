@@ -58,7 +58,7 @@ public class TestProcessControl {
   @Mock private ProcessReports m_processReports2;
 
   @Before public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(m_processReports1.getAgentProcessReport())
       .thenReturn(m_agentProcessReport1);

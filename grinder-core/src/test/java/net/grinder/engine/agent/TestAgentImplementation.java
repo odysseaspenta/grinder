@@ -23,8 +23,8 @@ package net.grinder.engine.agent;
 
 import static net.grinder.testutility.SocketUtilities.findFreePort;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.contains;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
@@ -70,7 +70,7 @@ public class TestAgentImplementation extends AbstractJUnit4FileTestCase {
 
   @Before public void setUp() throws Exception {
     DebugThreadWorkerFactory.setIsolatedRunnerClass(TestRunner.class.getName());
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @After public void tearDown() throws Exception {

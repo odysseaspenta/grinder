@@ -22,8 +22,8 @@
 package net.grinder.console;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -89,7 +89,7 @@ public class TestConsoleFoundation extends AbstractJUnit4FileTestCase {
   private final ExecutorService m_executor = Executors.newCachedThreadPool();
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(m_consoleCommunication.getMessageDispatchRegistry())
       .thenReturn(m_messageDispatchRegistry);

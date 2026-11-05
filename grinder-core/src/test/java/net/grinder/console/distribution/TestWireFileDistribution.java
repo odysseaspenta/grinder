@@ -60,7 +60,7 @@ public class TestWireFileDistribution extends AbstractJUnit4FileTestCase {
   @Mock private ConsoleCommunication m_consoleCommunication;
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(m_consoleCommunication.getMessageDispatchRegistry())
       .thenReturn(m_messageDispatchRegistry);

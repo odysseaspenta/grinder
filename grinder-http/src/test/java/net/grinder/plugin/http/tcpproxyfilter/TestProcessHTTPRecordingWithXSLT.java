@@ -21,8 +21,8 @@
 
 package net.grinder.plugin.http.tcpproxyfilter;
 
-import static org.mockito.Matchers.contains;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -63,7 +63,7 @@ public class TestProcessHTTPRecordingWithXSLT
   private PrintWriter m_out = new PrintWriter(m_stringOut);
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test public void testWithIdentityTransform() throws Exception {

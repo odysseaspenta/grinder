@@ -25,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.contains;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -61,7 +61,7 @@ public class TestDCRContextImplementation {
     m_originalInstrumentation = ExposeInstrumentation.getInstrumentation();
     assertNotNull(m_originalInstrumentation);
 
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
     when(m_instrumentation.isRetransformClassesSupported()).thenReturn(true);
   }
 

@@ -23,7 +23,7 @@ package net.grinder.console.synchronisation;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -77,7 +77,7 @@ public class TestWireDistributedBarriers {
   @Captor private ArgumentCaptor<Listener> m_processStatusListenerCaptor;
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(m_consoleCommunication.getMessageDispatchRegistry())
       .thenReturn(m_messageDispatchRegistry);

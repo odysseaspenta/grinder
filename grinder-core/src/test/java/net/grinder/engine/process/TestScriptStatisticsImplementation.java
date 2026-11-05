@@ -71,7 +71,7 @@ public class TestScriptStatisticsImplementation {
     StatisticsServicesTestFactory.createTestInstance();
 
   @Before public void setup() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test public void testContextChecks() throws Exception {

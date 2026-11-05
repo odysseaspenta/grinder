@@ -48,7 +48,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.Whitebox;
+import net.grinder.testutility.Reflection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -181,7 +181,7 @@ public class RestControllerTest  extends AbstractJUnit4FileTestCase {
 
         Bootstrap bootstrap = Mockito.mock(Bootstrap.class);
 
-        Whitebox.setInternalState(bootstrap, "INSTANCE", new Bootstrap(
+        Reflection.setField(bootstrap, "INSTANCE", new Bootstrap(
                 m_properties,
                 modelParam,
                 sampleModelViewsParam,
@@ -201,7 +201,7 @@ public class RestControllerTest  extends AbstractJUnit4FileTestCase {
         this.restController.perform(MockMvcRequestBuilders.get("/version")).andExpect(
                 MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(
-                        Matchers.containsString(GrinderBuild.getName())));
+                        ArgumentMatchers.containsString(GrinderBuild.getName())));
 
     }
 

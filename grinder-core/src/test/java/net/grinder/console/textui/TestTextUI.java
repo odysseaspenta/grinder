@@ -22,8 +22,8 @@
 package net.grinder.console.textui;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.contains;
-import static org.mockito.Matchers.matches;
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.ArgumentMatchers.matches;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -89,7 +89,7 @@ public class TestTextUI {
     m_sampleModelStubFactory.getStub();
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test public void testErrorHandler() throws Exception {

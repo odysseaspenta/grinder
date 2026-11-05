@@ -54,7 +54,7 @@ public class TestConsoleBarrierGroups {
   @Captor private ArgumentCaptor<Message> m_messageCaptor;
 
   @Before public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(m_consoleCommunication.getMessageDispatchRegistry())
       .thenReturn(m_messageDispatchRegistry);

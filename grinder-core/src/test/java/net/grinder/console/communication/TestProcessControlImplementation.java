@@ -22,7 +22,7 @@
 package net.grinder.console.communication;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -78,7 +78,7 @@ public class TestProcessControlImplementation {
   private ProcessControl m_processControl;
 
   @Before public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     when(m_consoleCommunication.getMessageDispatchRegistry())
       .thenReturn(m_messageDispatchRegistry);

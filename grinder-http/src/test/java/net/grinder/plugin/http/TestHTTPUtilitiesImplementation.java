@@ -66,7 +66,7 @@ public class TestHTTPUtilitiesImplementation {
   @Mock private PluginThreadContext m_threadContext;
 
   @Before public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     final TimeAuthority timeAuthority = new StandardTimeAuthority();
 

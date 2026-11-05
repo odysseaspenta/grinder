@@ -23,7 +23,7 @@ package net.grinder.script;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +58,7 @@ public class TestTest {
 
 
   @Before public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
 
     final TestRegistry testRegistry =
       StubTestRegistry.stubTestRegistry(m_instrumenter);

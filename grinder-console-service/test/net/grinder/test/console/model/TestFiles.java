@@ -34,8 +34,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.util.reflection.Whitebox;
-import org.mockito.runners.MockitoJUnitRunner;
+import net.grinder.testutility.Reflection;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.beans.PropertyChangeListener;
 import java.util.*;
@@ -71,7 +71,7 @@ public class TestFiles {
             public void setNewFileTime(long time) {}
             public void addListener(PropertyChangeListener listener) {}
         });
-        Whitebox.setInternalState(files, "distributionResult", result);
+        Reflection.setField(files, "distributionResult", result);
         Map<String, Object> status = files.status(fileDistribution);
         Assert.assertEquals(status.get("stale"),stale);
         Assert.assertEquals(status.get("last-distribution"),result);
@@ -134,8 +134,8 @@ public class TestFiles {
     @Test
     public void testStartDistribution() throws FileContents.FileContentsException {
         DistributionResultHistory history = new DistributionResultHistory();
-        Whitebox.setInternalState(files, "nextId", 22);
-        Whitebox.setInternalState(files, "distributionResult", history);
+        Reflection.setField(files, "nextId", 22);
+        Reflection.setField(files, "distributionResult", history);
 
         NextFileSimulator nextFileSimulator = new NextFileSimulator();
         Mockito.when(fileDistribution.getHandler()).thenReturn(mockHandler);
@@ -165,8 +165,8 @@ public class TestFiles {
     @Test
     public void testStartDistributionBadHandler() throws FileContents.FileContentsException {
         DistributionResultHistory history = new DistributionResultHistory();
-        Whitebox.setInternalState(files, "nextId", 22);
-        Whitebox.setInternalState(files, "distributionResult", history);
+        Reflection.setField(files, "nextId", 22);
+        Reflection.setField(files, "distributionResult", history);
 
         Mockito.when(fileDistribution.getHandler()).thenReturn(mockHandler);
         Mockito.when(mockHandler.sendNextFile()).thenThrow(new FileContents.FileContentsException("Distribution failed"));

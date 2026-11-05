@@ -22,6 +22,8 @@
 
 package net.grinder.util;
 
+import java.text.DecimalFormatSymbols;
+
 import java.util.Locale;
 
 import junit.framework.TestCase;
@@ -76,7 +78,8 @@ public class TestSignificantFigureFormat extends TestCase {
     assertEquals("0.000", f.format(-0.0));
     assertEquals("\u221e", f.format(Double.POSITIVE_INFINITY));
     assertEquals("-\u221e", f.format(Double.NEGATIVE_INFINITY));
-    assertEquals("\ufffd", f.format(Double.NaN));
+    assertEquals(DecimalFormatSymbols.getInstance().getNaN(),
+                 f.format(Double.NaN));
   }
 
   public void testEquality() {

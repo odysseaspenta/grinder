@@ -21,6 +21,8 @@
 
 package net.grinder.console.swingui;
 
+import java.awt.GraphicsEnvironment;
+
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.FileFilter;
@@ -142,7 +144,7 @@ public class TestFileTree extends AbstractFileTestCase {
   }
 
   public void testDisplay() throws Exception {
-    if (!Boolean.getBoolean("build.travis")) {
+    if (!GraphicsEnvironment.isHeadless()) {
 
       final EditorModel editorModel = new EditorModel(s_resources,
               m_textSourceFactory,
