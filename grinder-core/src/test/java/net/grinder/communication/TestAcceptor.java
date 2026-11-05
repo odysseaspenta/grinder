@@ -33,6 +33,8 @@ import static org.junit.Assert.fail;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.io.IOException;
 import java.util.List;
 
 import net.grinder.common.UncheckedInterruptedException;
@@ -220,6 +222,24 @@ public class TestAcceptor {
     assertTrue(socketSet.reserveNext().isSentinel());
   }
 
+  /**
+   * Send bytes the acceptor cannot parse. The acceptor may reject and close
+   * the connection before all of them are written, in which case the write
+   * fails with a broken pipe. That is the rejection we want, so ignore it.
+   */
+  private static void writeGarbage(Socket socket) throws IOException {
+    try {
+      for (int i = 0; i < 10; ++i) {
+        socket.getOutputStream().write(99);
+      }
+
+      socket.getOutputStream().flush();
+    }
+    catch (SocketException e) {
+      // Acceptor closed the connection first.
+    }
+  }
+
   @Test public void testGetPendingException() throws Exception {
 
     final Acceptor acceptor = createAcceptor(3);
@@ -229,20 +249,10 @@ public class TestAcceptor {
 
     // Create a couple of problems.
     final Socket socket = new Socket("localhost", acceptor.getPort());
-
-    for (int i = 0; i < 10; ++i) {
-      socket.getOutputStream().write(99);
-    }
-
-    socket.getOutputStream().flush();
+    writeGarbage(socket);
 
     final Socket socket2 = new Socket("localhost", acceptor.getPort());
-
-    for (int i = 0; i < 10; ++i) {
-      socket2.getOutputStream().write(99);
-    }
-
-    socket2.getOutputStream().flush();
+    writeGarbage(socket2);
 
     // Blocking, so we don't need to do fancy synchronisation to
     // ensure acceptor has encountered the problems.
