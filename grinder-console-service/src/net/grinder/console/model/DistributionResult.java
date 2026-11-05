@@ -22,7 +22,7 @@
 package net.grinder.console.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class DistributionResult {
     }
 
     @JsonProperty("per-cent-complete")
-    @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public Integer getPercentComplete() {
         return percentComplete;
     }
