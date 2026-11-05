@@ -245,7 +245,8 @@ public class RestControllerTest  extends AbstractJUnit4FileTestCase {
 
     @Test
     public void testUnknownRoutes() throws Exception{
-        this.restController.perform(MockMvcRequestBuilders.put("agents/status"))
+        // Spring 7 rejects relative URIs outright, so use an unmapped absolute one.
+        this.restController.perform(MockMvcRequestBuilders.put("/agents/unknown"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
         this.restController.perform(MockMvcRequestBuilders.put("/agents/status"))
                 .andExpect(MockMvcResultMatchers.status().isMethodNotAllowed());
