@@ -26,7 +26,6 @@ import static java.util.Arrays.asList;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -95,23 +94,34 @@ public abstract class JythonVersionRunner extends Suite {
       final URL jythonJarURL =
         new URL("file://" + pythonHome + "/jython.jar");
 
-      final ClassLoader loader =
-        new BlockingClassLoader(Arrays.asList(jythonJarURL),
-                                Collections.<String>emptySet(),
-                                ISOLATED_CLASSES,
-                                SHARED_CLASSES,
-                                true);
-
-      final Class<?> isolatedClass = loader.loadClass(testClass.getName());
-
-      runners.add(new PythonHomeRunner(isolatedClass, pythonHome));
+      runners.add(
+        new PythonHomeRunner(isolate(testClass, asList(jythonJarURL)),
+                             pythonHome));
     }
 
     if (runners.size() == 0) {
-      throw new InitializationError("No python home properties set");
+      // No alternative Jython installations are configured. Run once against
+      // the Jython on the class path, still in an isolating class loader so
+      // the interpreter's static state cannot leak between test classes.
+      runners.add(
+        new PythonHomeRunner(isolate(testClass, Collections.<URL>emptyList()),
+                             null));
     }
 
     return runners;
+  }
+
+  private static Class<?> isolate(Class<?> testClass, List<URL> additional)
+    throws ClassNotFoundException {
+
+    final ClassLoader loader =
+      new BlockingClassLoader(additional,
+                              Collections.<String>emptySet(),
+                              ISOLATED_CLASSES,
+                              SHARED_CLASSES,
+                              true);
+
+    return loader.loadClass(testClass.getName());
   }
 
   private static class PythonHomeRunner extends BlockJUnit4ClassRunner {
@@ -125,12 +135,16 @@ public abstract class JythonVersionRunner extends Suite {
       m_pythonHome = pythonHome;
     }
 
+    private String homeLabel() {
+      return m_pythonHome != null ? m_pythonHome : "classpath";
+    }
+
     @Override public Description getDescription() {
       final Class<?> javaClass = getTestClass().getJavaClass();
 
       final Description result =
         Description.createSuiteDescription(
-          javaClass.getSimpleName() + " [" + m_pythonHome + "]",
+          javaClass.getSimpleName() + " [" + homeLabel() + "]",
           javaClass.getAnnotations());
 
       for (Description child : super.getDescription().getChildren()) {
@@ -141,13 +155,17 @@ public abstract class JythonVersionRunner extends Suite {
     }
 
     @Override protected String testName(FrameworkMethod method) {
-      return super.testName(method) + " [" + m_pythonHome + "]";
+      return super.testName(method) + " [" + homeLabel() + "]";
     }
 
     @Override protected void runChild(FrameworkMethod method,
                                       RunNotifier notifier) {
-      final String oldPythonHome = System.getProperty("python.home");
+      if (m_pythonHome == null) {
+        super.runChild(method, notifier);
+        return;
+      }
 
+      final String oldPythonHome = System.getProperty("python.home");
       System.setProperty("python.home", m_pythonHome);
 
       try {

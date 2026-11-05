@@ -92,6 +92,9 @@ public class TestThreadContextImplementation {
 
   @Test public void testDispatchResultReporter() throws Exception {
 
+    // Mockito 5 mocks final methods too, so the real default no longer applies.
+    when(m_properties.getBoolean("grinder.logData", true)).thenReturn(true);
+
     final ThreadContext threadContext =
       new ThreadContextImplementation(m_properties,
                                       m_statisticsServices,

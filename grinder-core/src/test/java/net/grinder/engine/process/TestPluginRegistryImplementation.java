@@ -43,6 +43,7 @@ import net.grinder.util.TimeAuthority;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -154,7 +155,8 @@ public class TestPluginRegistryImplementation {
     verify(m_grinderPlugin).createThreadListener(threadContext);
 
     verify(threadContext, times(2))
-      .registerThreadLifeCycleListener(any(ThreadLifeCycleListener.class));
+      .registerThreadLifeCycleListener(
+        ArgumentMatchers.<ThreadLifeCycleListener>any());
 
     threadListener.beginRun();
     threadListener.endRun();

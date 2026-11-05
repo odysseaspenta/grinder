@@ -103,11 +103,11 @@ public class TestBlockingClassLoader {
 
     assertNotNull(getClass().getClassLoader().getResource(resourceName));
 
-    final URLClassLoader grandParentLoader =
-      (URLClassLoader)getClass().getClassLoader();
+    final ClassLoader grandParentLoader = getClass().getClassLoader();
 
     final URLClassLoader parentLoader =
-      new URLClassLoader(grandParentLoader.getURLs(), grandParentLoader);
+      new URLClassLoader(BlockingClassLoader.classPathURLs(grandParentLoader),
+                         grandParentLoader);
 
     final BlockingClassLoader cl =
       new BlockingClassLoader(parentLoader,

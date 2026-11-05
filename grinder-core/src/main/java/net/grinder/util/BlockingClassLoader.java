@@ -61,7 +61,7 @@ public class BlockingClassLoader extends URLClassLoader {
    * class loader is no longer a {@link URLClassLoader}, so fall back to
    * the {@code java.class.path} system property.
    */
-  private static URL[] classPathOf(ClassLoader parent) {
+  public static URL[] classPathURLs(ClassLoader parent) {
     if (parent instanceof URLClassLoader) {
       return ((URLClassLoader) parent).getURLs();
     }
@@ -128,7 +128,7 @@ public class BlockingClassLoader extends URLClassLoader {
                              Set<String> isolated,
                              Set<String> shared,
                              boolean respectGrandparents) {
-    super(join(additionalClassPath, classPathOf(parent)), parent);
+    super(join(additionalClassPath, classPathURLs(parent)), parent);
 
     m_blocked = new Classes(blocked);
     m_isolated = new Classes(isolated);
