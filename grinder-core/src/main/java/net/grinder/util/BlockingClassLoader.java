@@ -27,6 +27,7 @@ import static java.util.Collections.list;
 
 import java.io.IOException;
 import java.net.URL;
+import java.io.File;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,6 +54,34 @@ public class BlockingClassLoader extends URLClassLoader {
     final List<URL> classPath = new ArrayList<URL>(additionalClassPath);
     classPath.addAll(asList(urls));
     return classPath.toArray(new URL[classPath.size()]);
+  }
+
+  /**
+   * The URLs a parent class loader searches. Since Java 9 the application
+   * class loader is no longer a {@link URLClassLoader}, so fall back to
+   * the {@code java.class.path} system property.
+   */
+  private static URL[] classPathOf(ClassLoader parent) {
+    if (parent instanceof URLClassLoader) {
+      return ((URLClassLoader) parent).getURLs();
+    }
+
+    final String[] entries =
+      System.getProperty("java.class.path", "").split(File.pathSeparator);
+    final List<URL> result = new ArrayList<URL>(entries.length);
+
+    for (final String entry : entries) {
+      if (entry.length() > 0) {
+        try {
+          result.add(new File(entry).toURI().toURL());
+        }
+        catch (java.net.MalformedURLException e) {
+          throw new IllegalStateException("Bad class path entry: " + entry, e);
+        }
+      }
+    }
+
+    return result.toArray(new URL[result.size()]);
   }
 
   /**
@@ -93,13 +122,13 @@ public class BlockingClassLoader extends URLClassLoader {
    * @param respectGrandparents
    *          Only block or isolate classes from the parent class loader.
    */
-  public BlockingClassLoader(URLClassLoader parent,
+  public BlockingClassLoader(ClassLoader parent,
                              List<URL> additionalClassPath,
                              Set<String> blocked,
                              Set<String> isolated,
                              Set<String> shared,
                              boolean respectGrandparents) {
-    super(join(additionalClassPath, parent.getURLs()), parent);
+    super(join(additionalClassPath, classPathOf(parent)), parent);
 
     m_blocked = new Classes(blocked);
     m_isolated = new Classes(isolated);
@@ -132,7 +161,7 @@ public class BlockingClassLoader extends URLClassLoader {
                              Set<String> isolated,
                              Set<String> shared,
                              boolean respectGrandparents) {
-    this((URLClassLoader)BlockingClassLoader.class.getClassLoader(),
+    this(BlockingClassLoader.class.getClassLoader(),
          additionalClassPath,
          blocked,
          isolated,
