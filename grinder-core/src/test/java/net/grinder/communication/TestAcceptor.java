@@ -55,6 +55,26 @@ public class TestAcceptor {
 
   private TimeAuthority m_timeAuthority = new StandardTimeAuthority();
 
+  /**
+   * The previous iteration shut an acceptor down on this port a moment ago,
+   * and the OS may not have released it yet. Retry briefly.
+   */
+  private Acceptor bindWithRetry(String address, int port) throws Exception {
+    CommunicationException last = null;
+
+    for (int attempt = 0; attempt < 40; ++attempt) {
+      try {
+        return new Acceptor(address, port, 2, m_timeAuthority);
+      }
+      catch (CommunicationException e) {
+        last = e;
+        Thread.sleep(50);
+      }
+    }
+
+    throw last;
+  }
+
   @Test public void testConstructor() throws Exception {
 
     final InetAddress[] localAddresses =
@@ -75,8 +95,7 @@ public class TestAcceptor {
     final int port = findFreePort();
 
     for (int i=0; i<testAddresses.length; ++i) {
-      final Acceptor acceptor =
-          new Acceptor(testAddresses[i], port, 2, m_timeAuthority);
+      final Acceptor acceptor = bindWithRetry(testAddresses[i], port);
       assertEquals(port, acceptor.getPort());
       assertNull(acceptor.peekPendingException());
       acceptor.shutdown();
