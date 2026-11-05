@@ -89,16 +89,20 @@ public final class JVM {
   public boolean isAtLeastVersion(int minimumMajor, int minimumMinor)
     throws VersionException {
 
+    // Java 8 and earlier report "1.8.0_292"; Java 9 and later report
+    // "21.0.12.1" or just "17" (JEP 223).
     final String version = System.getProperty("java.version");
     final StringTokenizer versionTokenizer = new StringTokenizer(version, ".");
 
     try {
       final int major = Integer.parseInt(versionTokenizer.nextToken());
-      final int minor = Integer.parseInt(versionTokenizer.nextToken());
+      final int minor =
+        versionTokenizer.hasMoreTokens() ?
+          Integer.parseInt(versionTokenizer.nextToken()) : 0;
 
       return
-        major >= minimumMajor &&
-        minor >= minimumMinor;
+        major > minimumMajor ||
+        major == minimumMajor && minor >= minimumMinor;
     }
     catch (NoSuchElementException e) {
       throw new VersionException("Could not parse JVM version " + version);
@@ -108,11 +112,6 @@ public final class JVM {
     }
   }
 
-  /**
-   * Return a description of the JVM.
-   *
-   * @return The description.
-   */
   public String toString()  {
     return System.getProperty("java.runtime.name") + " " +
       System.getProperty("java.runtime.version") + ": " +
