@@ -140,15 +140,6 @@
 
             <!-- Put Jython droppings in one place. -->
             <python.cachedir>${project.basedir}/target/python.cache</python.cachedir>
-
-            <!-- Alternative Jython implementations for unit tests. If you don't
-              have these, comment out the property. -->
-            <jython2_1.dir>/opt/jython/jython-2.1</jython2_1.dir>
-            <jython2_2_1.dir>/opt/jython/jython2.2.1</jython2_2_1.dir>
-            <jython2_5_0.dir>/opt/jython/jython2.5.0</jython2_5_0.dir>
-            <jython2_5_1.dir>/opt/jython/jython2.5.1</jython2_5_1.dir>
-            <jython2_5_2.dir>/opt/jython/jython2.5.2</jython2_5_2.dir>
-            <jython2_7_0.dir>/opt/jython/jython2.5.2</jython2_7_0.dir>
           </systemPropertyVariables>
         </configuration>
       </plugin>
