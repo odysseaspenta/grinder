@@ -21,35 +21,33 @@
 
 package net.grinder.testutility;
 
-import static org.mockito.Matchers.argThat;
+import static org.mockito.ArgumentMatchers.argThat;
 
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-import org.hamcrest.Description;
 import org.mockito.ArgumentMatcher;
 
 
-
 /**
- * Mocking utility classes for use with Mockito.
+ * Mockito argument matchers used across the test suites.
  *
  * @author Philip Aston
  */
 public class MockingUtilities {
 
   /**
-   * Prettier version of {@link ArgumentMatcher}.
+   * An {@link ArgumentMatcher} that tolerates arguments of the wrong type
+   * instead of throwing {@link ClassCastException}.
    *
-   * @author Philip Aston
+   * @param <T> The argument type.
    */
   public abstract static class TypedArgumentMatcher<T>
-    extends ArgumentMatcher<T> {
+    implements ArgumentMatcher<T> {
 
-    @SuppressWarnings("unchecked")
-    @Override public final boolean matches(Object argument) {
+    @Override public final boolean matches(T argument) {
       try {
-        return argumentMatches((T) argument);
+        return argumentMatches(argument);
       }
       catch (ClassCastException e) {
         return false;
@@ -68,8 +66,8 @@ public class MockingUtilities {
                  t.containsAll(actual);
         }
 
-        @Override public void describeTo(Description description) {
-          description.appendText("equalContents(" + t + ")");
+        @Override public String toString() {
+          return "equalContents(" + t + ")";
         }
       });
   }
@@ -81,31 +79,21 @@ public class MockingUtilities {
           return superClass.isAssignableFrom(t);
         }
 
-        @Override public void describeTo(Description description) {
-          description.appendText("subclass(" + superClass.getName() + ")");
+        @Override public String toString() {
+          return "subclass(" + superClass.getName() + ")";
         }
       });
   }
 
-  /**
-   * Like {@link org.mockito.Matchers#matches}, but uses find rather than
-   * matches, so supports multi-line strings.
-   *
-   * @param regex
-   *          The regular expression.
-   * @return empty String ("").
-   */
   public static String containsRegex(final String regex) {
     return argThat(new TypedArgumentMatcher<String>() {
 
       @Override protected boolean argumentMatches(String text) {
-        return Pattern.compile(regex).matcher(text).find();
+        return text != null && Pattern.compile(regex).matcher(text).find();
       }
 
-      @Override public void describeTo(Description description) {
-        description.appendText(
-          "containsRegex(\"" + regex.replaceAll("\\\\", "\\\\\\\\")
-          + "\")");
+      @Override public String toString() {
+        return "containsRegex(\"" + regex.replaceAll("\\\\", "\\\\\\\\") + "\")";
       }
     });
   }
