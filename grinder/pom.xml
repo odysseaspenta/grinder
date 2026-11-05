@@ -59,6 +59,11 @@
             <!-- Indexing doesn't allow for our grinder-patch.jar, and fails to
                  index ring-middleware-format.jar for some reason. -->
             <index>false</index>
+          </archive>
+          <!-- The manifest Class-Path is derived from the dependency list, which
+               the up-to-date check does not look at. -->
+          <forceCreation>true</forceCreation>
+          <archive>
             <manifest>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 
