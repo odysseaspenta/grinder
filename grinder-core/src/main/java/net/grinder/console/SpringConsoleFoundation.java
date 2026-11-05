@@ -30,6 +30,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -46,6 +48,17 @@ public class SpringConsoleFoundation {
         System.setProperty(LoggingSystem.SYSTEM_PROPERTY, LoggingSystem.NONE);
 
         SpringApplication app = new SpringApplication(SpringConsoleFoundation.class);
+
+        // Bind the embedded server to the console's configured HTTP address
+        // and port. Done here, not in a web console bean, so it also holds
+        // when the web console module is absent from the class path.
+        final Map<String, Object> defaults = new HashMap<String, Object>();
+        defaults.put("server.port", ConsoleFoundation.PROPERTIES.getHttpPort());
+        final String httpHost = ConsoleFoundation.PROPERTIES.getHttpHost();
+        if (httpHost != null && httpHost.length() > 0) {
+            defaults.put("server.address", httpHost);
+        }
+        app.setDefaultProperties(defaults);
 
         app.setBanner(new Banner() {
                           @Override
