@@ -149,6 +149,10 @@ public class TestFileDistribution extends AbstractFileTestCase {
     assertTrue(file2.createNewFile());
     assertTrue(file2.setLastModified(file1.lastModified() + 5000));
 
+    // The scan accepts files modified at or after the previous scan time, so
+    // let the clock move on before scanning, or a file created in the same
+    // millisecond as the scan is reported again by the next one.
+    Thread.sleep(5);
     fileDistribution.scanDistributionFiles();
     // The directory changed when file1 was recreated, possibly a millisecond
     // or two before file1's own time stamp, so the earliest change is the
@@ -172,6 +176,7 @@ public class TestFileDistribution extends AbstractFileTestCase {
     final File file4 = new File(getDirectory(), "file4");
     assertTrue(file4.createNewFile());
     agentCacheStateStubFactory.resetOutOfDate();
+    Thread.sleep(5);
     fileDistribution.scanDistributionFiles();
     assertEquals(file4.lastModified(),
                  agentCacheStateStubFactory.getEarliestOutOfDateTime());
