@@ -140,8 +140,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-javaagent:${project.build.directory}/grinder-dcr-agent.jar
-            -Dbuild.travis=${build.travis}</argLine>
+          <argLine>-javaagent:${project.build.directory}/grinder-dcr-agent.jar</argLine>
           <systemPropertyVariables>
             <grinder.version>${project.version}</grinder.version>
 

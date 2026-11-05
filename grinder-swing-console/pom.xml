@@ -74,7 +74,6 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Dbuild.travis=${build.travis}</argLine>
         </configuration>
       </plugin>
       <plugin>
