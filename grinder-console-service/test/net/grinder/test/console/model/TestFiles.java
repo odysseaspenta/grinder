@@ -105,11 +105,22 @@ public class TestFiles {
     }
 
     class DistributionResultHistory extends DistributionResult {
-        public List<DistributionResult> history = new ArrayList<>();
+        public List<DistributionResult> history =
+            Collections.synchronizedList(new ArrayList<>());
         @Override
         public void setState(String state) {
             super.setState(state);
             history.add(clone());
+        }
+
+        public void awaitEntries(int count) {
+            final long deadline = System.currentTimeMillis() + 10000;
+            while (history.size() < count) {
+                Assert.assertTrue("Timed out waiting for " + count + " history entries, have " + history,
+                                  System.currentTimeMillis() < deadline);
+                try { Thread.sleep(50); }
+                catch (InterruptedException e) { throw new AssertionError(e); }
+            }
         }
 
         public void assertHistoryEntry(int index, int nextId, String state, Integer pctComplete, String[] files, String error) {
@@ -147,14 +158,10 @@ public class TestFiles {
 
         DistributionResult result = files.startDistribution(fileDistribution);
         Assert.assertEquals(result.getId(), 23);
-        Assert.assertEquals(result.getState(), "started");
-        Assert.assertNull(result.getPercentComplete());
-        Assert.assertEquals(result.getFiles(), Arrays.asList(new String[] {}));
+        // The distribution runs on its own thread and may already have moved
+        // past "started"; history entry 0 records that state deterministically.
 
-        while (history.history.size() < 3) {
-            try { Thread.sleep(200); }
-            catch (InterruptedException e) { e.printStackTrace(); }
-        }
+        history.awaitEntries(3);
 
         history.assertHistoryEntry(0, 23, "started", null, new String[] {}, null);
         history.assertHistoryEntry(1, 23, "sending", 50, new String[] {"a"}, null);
@@ -173,14 +180,10 @@ public class TestFiles {
 
         DistributionResult result = files.startDistribution(fileDistribution);
         Assert.assertEquals(result.getId(), 23);
-        Assert.assertEquals(result.getState(), "started");
-        Assert.assertNull(result.getPercentComplete());
-        Assert.assertEquals(result.getFiles(), Arrays.asList(new String[] {}));
+        // The distribution runs on its own thread and may already have moved
+        // past "started"; history entry 0 records that state deterministically.
 
-        while (history.history.size() < 2) {
-            try { Thread.sleep(200); }
-            catch (InterruptedException e) { e.printStackTrace(); }
-        }
+        history.awaitEntries(2);
 
         history.assertHistoryEntry(0, 23, "started", null, new String[] {}, null);
         history.assertHistoryEntry(1, 23, "error",   null, new String[] {}, "Distribution failed");
