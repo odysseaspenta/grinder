@@ -38,8 +38,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.servlet.http.HttpSession;
+import java.util.Base64;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -122,7 +122,7 @@ public class WebConsoleEndPoint {
         catch (IOException e) {
             e.printStackTrace();
         }
-        return DatatypeConverter.printBase64Binary(fileContent.getBytes());
+        return Base64.getEncoder().encodeToString(fileContent.getBytes());
     }
 
 
@@ -163,7 +163,7 @@ public class WebConsoleEndPoint {
             out.close();
             in.close();
             contentFile = out.toString();
-            contentFile = DatatypeConverter.printBase64Binary(contentFile.getBytes());
+            contentFile = Base64.getEncoder().encodeToString(contentFile.getBytes());
 
         }
         catch (IOException ie) {
@@ -185,7 +185,7 @@ public class WebConsoleEndPoint {
         String err;
         try {
             PrintWriter writer = new PrintWriter(body.get("filePath"), "UTF-8");
-            writer.print(new String(DatatypeConverter.parseBase64Binary(body.get("fileContent"))));
+            writer.print(new String(Base64.getDecoder().decode(body.get("fileContent"))));
             writer.close();
             err="success";
         }
@@ -204,7 +204,7 @@ public class WebConsoleEndPoint {
         String currentPath = getCurrentPath();
         try {
             PrintWriter writer = new PrintWriter(currentPath + "/" + body.get("newName"), "UTF-8");
-            writer.print(new String(DatatypeConverter.parseBase64Binary(body.get("fileContent"))));
+            writer.print(new String(Base64.getDecoder().decode(body.get("fileContent"))));
             writer.close();
         }
         catch (IOException e) {

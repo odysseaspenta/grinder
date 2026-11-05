@@ -93,7 +93,7 @@ public class TestProcesses {
                 called.setValue((GrinderProperties)invocation.getArguments()[0]);
                 return null;
             }
-        }).when(pc).startWorkerProcesses(Mockito.anyObject());
+        }).when(pc).startWorkerProcesses(Mockito.any());
 
 
         File f = File.createTempFile("grindertest", "tmp");
@@ -144,7 +144,7 @@ public class TestProcesses {
                 called.setValue((GrinderProperties)invocation.getArguments()[1]);
                 return null;
             }
-        }).when(pc).startWorkerProcessesWithDistributedFiles(Mockito.anyObject(), Mockito.anyObject());
+        }).when(pc).startWorkerProcessesWithDistributedFiles(Mockito.any(), Mockito.any());
 
 
         File f = File.createTempFile("grindertest", "tmp");
@@ -194,7 +194,7 @@ public class TestProcesses {
                 listener.setValue((ProcessControl.Listener) invocation.getArguments()[0]);
                 return null;
             }
-        }).when(pc).addProcessStatusListener(Mockito.anyObject());
+        }).when(pc).addProcessStatusListener(Mockito.any());
 
         processes.init();
 
@@ -220,7 +220,7 @@ public class TestProcesses {
                 listener.setValue((ProcessControl.Listener) invocation.getArguments()[0]);
                 return null;
             }
-        }).when(pc).addProcessStatusListener(Mockito.anyObject());
+        }).when(pc).addProcessStatusListener(Mockito.any());
 
         processes.init();
 
@@ -350,7 +350,7 @@ public class TestProcesses {
                 listener.setValue((ProcessControl.Listener) invocation.getArguments()[0]);
                 return null;
             }
-        }).when(pc).addProcessStatusListener(Mockito.anyObject());
+        }).when(pc).addProcessStatusListener(Mockito.any());
 
         processes.init();
 
