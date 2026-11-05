@@ -9,4 +9,4 @@
 .settings
 .vscode
 key
-
+!/.github
