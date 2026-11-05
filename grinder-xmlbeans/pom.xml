@@ -30,51 +30,28 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>xmlbeans-maven-plugin</artifactId>
+        <groupId>org.apache.xmlbeans</groupId>
+        <artifactId>xmlbeans</artifactId>
+        <version>5.3.0</version>
         <executions>
           <execution>
-            <id />
             <phase>generate-sources</phase>
             <goals>
-              <goal>xmlbeans</goal>
+              <goal>compile</goal>
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <sourceDir>${project.basedir}/src/main/xsd</sourceDir>
+          <xmlConfigs>${project.basedir}/src/main/xsdconfig/tcpproxy-http.xsdconfig</xmlConfigs>
+          <javaTargetDir>${project.build.directory}/generated-sources/xmlbeans</javaTargetDir>
+          <classTargetDir>${project.build.directory}/generated-resources/xmlbeans</classTargetDir>
+          <name>grindertcpproxyhttp</name>
+          <repackage>net.grinder.xmlbeans.metadata</repackage>
+        </configuration>
       </plugin>
     </plugins>
 
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>xmlbeans-maven-plugin</artifactId>
-                    <!-- Necessary to prevent m2e NPE. -->
-                    <versionRange>[2.3.3,)</versionRange>
-                    <goals>
-                      <goal>xmlbeans</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <execute>
-                      <runOnIncremental>false</runOnIncremental>
-                    </execute>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
 </project>
