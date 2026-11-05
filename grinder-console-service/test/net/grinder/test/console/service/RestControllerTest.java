@@ -201,7 +201,7 @@ public class RestControllerTest  extends AbstractJUnit4FileTestCase {
         this.restController.perform(MockMvcRequestBuilders.get("/version")).andExpect(
                 MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(
-                        ArgumentMatchers.containsString(GrinderBuild.getName())));
+                        Matchers.containsString(GrinderBuild.getName())));
 
     }
 

@@ -24,6 +24,7 @@ package HTTPClient;
 
 import java.net.ProtocolException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -72,9 +73,9 @@ public class TestCookie extends TestCase {
     assertEquals("bah", cookies2[0].getValue());
     assertEquals("lah", cookies2[0].getPath());
 
-    final DateFormat df =
-      DateFormat.getDateTimeInstance(
-        DateFormat.SHORT, DateFormat.MEDIUM, Locale.UK);
+    // An explicit pattern: the locale's short date format changed with the
+    // JDK's CLDR data and no longer parses "25/03/06".
+    final DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss", Locale.UK);
     df.setTimeZone(TimeZone.getTimeZone("GMT"));
     final Date result = df.parse("25/03/06 16:53:28");
     assertEquals(result, cookies2[0].expires());
