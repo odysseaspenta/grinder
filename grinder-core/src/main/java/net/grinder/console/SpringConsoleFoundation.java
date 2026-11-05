@@ -24,6 +24,7 @@ package net.grinder.console;
 import org.springframework.boot.Banner;
 import org.springframework.boot.ResourceBanner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
@@ -39,6 +40,11 @@ import java.util.Properties;
 public class SpringConsoleFoundation {
 
     public static void initSpring()  {
+        // The console configures Logback itself from logback.xml. Keep Spring
+        // Boot's LoggingSystem out of it, so it neither reconfigures the
+        // appenders nor requires a newer Logback than the one on the classpath.
+        System.setProperty(LoggingSystem.SYSTEM_PROPERTY, LoggingSystem.NONE);
+
         SpringApplication app = new SpringApplication(SpringConsoleFoundation.class);
 
         app.setBanner(new Banner() {
