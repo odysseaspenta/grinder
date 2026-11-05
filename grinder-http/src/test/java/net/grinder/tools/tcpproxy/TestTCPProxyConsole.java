@@ -23,6 +23,7 @@
 package net.grinder.tools.tcpproxy;
 
 import java.awt.Component;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 
@@ -39,7 +40,7 @@ import junit.framework.TestCase;
 public class TestTCPProxyConsole extends TestCase {
 
   public void testConstructor() throws Exception {
-    if (!Boolean.getBoolean("build.travis")) {
+    if (!GraphicsEnvironment.isHeadless()) {
       final RandomStubFactory<TCPProxyEngine> engineStubFactory =
               RandomStubFactory.create(TCPProxyEngine.class);
 
@@ -56,7 +57,7 @@ public class TestTCPProxyConsole extends TestCase {
   }
 
   public void testButton() throws Exception {
-    if (!Boolean.getBoolean("build.travis")) {
+    if (!GraphicsEnvironment.isHeadless()) {
       final RandomStubFactory<TCPProxyEngine> engineStubFactory =
               RandomStubFactory.create(TCPProxyEngine.class);
 
