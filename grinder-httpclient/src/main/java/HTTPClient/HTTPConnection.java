@@ -36,7 +36,8 @@
 
 package HTTPClient;
 
-import sun.security.ssl.SSLContextImpl;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import java.io.OutputStream;
 import java.io.DataOutputStream;
@@ -3686,14 +3687,18 @@ public class HTTPConnection implements GlobalConstants, HTTPClientModuleConstant
     private static void checkCert(X509Certificate cert, String host)
 	    throws IOException
     {
-	String name;
+	String name = null;
 	try
 	{
-	    name = ((sun.security.x509.X500Name) cert.getSubjectDN()).
-			getCommonName().toLowerCase();
+	    for (Rdn rdn : new LdapName(cert.getSubjectDN().getName()).getRdns())
+	    {
+		if ("CN".equalsIgnoreCase(rdn.getType()))
+		    name = String.valueOf(rdn.getValue()).toLowerCase();
+	    }
 	}
 	catch (Throwable t)
 	    { return; } 	// Oh well, can't check the name in that case
+	if (name == null)  return;
 
 	if (Util.wildcardMatch(name, host))
 	    return;

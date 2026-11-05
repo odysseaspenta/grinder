@@ -137,10 +137,6 @@ public class CookieModule implements HTTPClientModule
 		{
 		    public void finalize() { saveCookies(); }
 		};
-	    try
-		{ System.runFinalizersOnExit(true); }
-	    catch (Throwable t)
-		{ }
 	}
     }
 
