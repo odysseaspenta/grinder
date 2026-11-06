@@ -39,35 +39,13 @@
           <!-- @SpringBootTest boots Spring directly, bypassing
                SpringConsoleFoundation, which opts out of Spring Boot's
                LoggingSystem because the build pins Logback 1.1.3. -->
-          <argLine>-Dorg.springframework.boot.logging.LoggingSystem=none</argLine>
+          <argLine>-javaagent:${org.mockito:mockito-core:jar} -Dorg.springframework.boot.logging.LoggingSystem=none</argLine>
         </configuration>
       </plugin>
     </plugins>
 
   </build>
 
-  <repositories>
-    <repository>
-      <id>central</id>
-      <url>https://repo1.maven.org/maven2</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-    <repository>
-      <id>clojars</id>
-      <url>http://clojars.org/repo/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -87,8 +65,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
-      <version>4.1.2</version>
       <exclusions>
         <exclusion>
           <groupId>junit</groupId>
@@ -100,7 +81,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webmvc-test</artifactId>
-      <version>4.1.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

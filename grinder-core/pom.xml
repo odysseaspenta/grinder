@@ -68,15 +68,15 @@
     </dependency>
 
     <dependency>
-      <groupId>org.python</groupId>
-      <artifactId>jython-standalone</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
     </dependency>
 
+    <!-- SpringConsoleFoundation boots the console's Spring context. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -140,7 +140,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-javaagent:${project.build.directory}/grinder-dcr-agent.jar</argLine>
+          <argLine>-javaagent:${org.mockito:mockito-core:jar} -javaagent:${project.build.directory}/grinder-dcr-agent.jar</argLine>
           <systemPropertyVariables>
             <grinder.version>${project.version}</grinder.version>
 
@@ -164,7 +164,6 @@
 
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>1.5</version>
         <executions>
           <execution>
             <phase>package</phase>
