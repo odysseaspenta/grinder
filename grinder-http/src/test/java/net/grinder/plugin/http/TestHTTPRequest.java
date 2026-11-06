@@ -48,11 +48,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocket;
 
 import net.grinder.common.GrinderException;
 import net.grinder.common.SSLContextFactory;
@@ -189,6 +195,39 @@ public class TestHTTPRequest {
       server.assertNoOpenConnectionsWithin(10000);
     }
     finally {
+      server.shutdown();
+    }
+  }
+
+  /**
+   * When the certificate name check fails no demultiplexor owns the socket
+   * yet, so HTTPConnection has to close it itself. Surefire runs this module
+   * with --finalization=disabled; the JDK's socket Cleaner would only close
+   * an abandoned socket after a GC, which this test does not wait for.
+   */
+  @Test public void testFailedCertificateCheckClosesSocket() throws Exception {
+    final HTTPPluginConnectionDefaults connectionDefaults =
+      HTTPPluginConnectionDefaults.getConnectionDefaults();
+    final TLSServer server = new TLSServer();
+
+    try {
+      connectionDefaults.setVerifyServerDistinguishedName(true);
+
+      try {
+        // The certificate names localhost, so 127.0.0.1 fails the check.
+        new HTTPRequest().GET("https://127.0.0.1:" + server.getPort() + "/");
+        fail("Expected the certificate name check to fail");
+      }
+      catch (final IOException e) {
+        assertContains(e.getMessage(), "does not match host name");
+      }
+
+      // HTTPConnection retries the request, so several connections are made.
+      assertEquals(0, server.connectionsLeftOpen(20000));
+      assertTrue(server.getAccepted() >= 1);
+    }
+    finally {
+      connectionDefaults.setVerifyServerDistinguishedName(false);
       server.shutdown();
     }
   }
@@ -1453,6 +1492,114 @@ public class TestHTTPRequest {
       finally {
         m_openConnections.decrementAndGet();
       }
+    }
+  }
+
+  /**
+   * Serves TLS connections with a certificate for CN=localhost and records,
+   * per connection, whether the client closed its end.
+   */
+  private static final class TLSServer implements Runnable {
+    private final SSLServerSocket m_serverSocket;
+    private final AtomicInteger m_accepted = new AtomicInteger();
+    private final AtomicInteger m_closedByClient = new AtomicInteger();
+    private final AtomicInteger m_leftOpen = new AtomicInteger();
+
+    TLSServer() throws Exception {
+      final char[] password = "passphrase".toCharArray();
+      final KeyStore keyStore = KeyStore.getInstance("PKCS12");
+
+      try (InputStream in =
+             TestHTTPRequest.class.getResourceAsStream("localhost.p12")) {
+        keyStore.load(in, password);
+      }
+
+      final KeyManagerFactory keyManagerFactory =
+        KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+      keyManagerFactory.init(keyStore, password);
+
+      final SSLContext context = SSLContext.getInstance("TLS");
+      context.init(keyManagerFactory.getKeyManagers(), null, null);
+
+      m_serverSocket = (SSLServerSocket)
+        context.getServerSocketFactory().createServerSocket(0);
+
+      final Thread thread = new Thread(this, "TLSServer");
+      thread.setDaemon(true);
+      thread.start();
+    }
+
+    int getPort() {
+      return m_serverSocket.getLocalPort();
+    }
+
+    @Override public void run() {
+      while (true) {
+        final Socket socket;
+
+        try {
+          socket = m_serverSocket.accept();
+        }
+        catch (final IOException e) {
+          return;
+        }
+
+        m_accepted.incrementAndGet();
+
+        final Thread thread =
+          new Thread(() -> serve(socket), "TLSServer connection");
+        thread.setDaemon(true);
+        thread.start();
+      }
+    }
+
+    private void serve(final Socket socket) {
+      try (Socket s = socket) {
+        s.setSoTimeout(5000);
+
+        try {
+          if (s.getInputStream().read() == -1) {
+            m_closedByClient.incrementAndGet();
+          }
+        }
+        catch (final SocketTimeoutException e) {
+          m_leftOpen.incrementAndGet();
+        }
+        catch (final IOException e) {
+          // A reset or a TLS alert, the client's end is gone either way.
+          m_closedByClient.incrementAndGet();
+        }
+      }
+      catch (final IOException e) {
+        // Closing failed; the outcome was already recorded.
+      }
+    }
+
+    /**
+     * Waits until every accepted connection has an outcome, then returns the
+     * number the client left open.
+     */
+    int connectionsLeftOpen(final long milliseconds)
+      throws InterruptedException {
+      final long deadline = System.currentTimeMillis() + milliseconds;
+
+      while (m_closedByClient.get() + m_leftOpen.get() < m_accepted.get()) {
+        if (System.currentTimeMillis() > deadline) {
+          fail("Not every connection reached an outcome in time");
+        }
+
+        Thread.sleep(50);
+      }
+
+      return m_leftOpen.get();
+    }
+
+    int getAccepted() {
+      return m_accepted.get();
+    }
+
+    void shutdown() throws IOException {
+      m_serverSocket.close();
     }
   }
 }

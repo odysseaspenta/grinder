@@ -3227,11 +3227,16 @@ public class HTTPConnection implements GlobalConstants, HTTPClientModuleConstant
                 sslSocket.setEnabledProtocols(getSSLProtocols());
 
                 if (getCheckCertificates()) {
-                    /** --GRINDER MODIFICATION **/
-                    checkCert((X509Certificate) ((SSLSocket) sock).
-                        getSession().getPeerCertificates()[0], Host);
-
-                /** GRINDER MODIFICATION++ **/
+                    // No demultiplexor owns the socket yet, so a failed
+                    // handshake or name check has to close it here.
+                    try {
+                        checkCert((X509Certificate) sslSocket.getSession().
+                                  getPeerCertificates()[0], Host);
+                    }
+                    catch (IOException e) {
+                        sslSocket.close();
+                        throw e;
+                    }
                 }
                 /** --GRINDER MODIFICATION **/
 		    }
