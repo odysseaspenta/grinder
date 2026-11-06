@@ -371,9 +371,9 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>asm</groupId>
+        <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
-        <version>3.2</version>
+        <version>9.9.1</version>
       </dependency>
       <dependency>
 	<groupId>com.theoryinpractise</groupId>

@@ -38,12 +38,11 @@ import net.grinder.util.weave.Weaver;
 import net.grinder.util.weave.WeavingException;
 import net.grinder.util.weave.j2se6.DCRWeaver.ClassFileTransformerFactory;
 
-import org.objectweb.asm.ClassAdapter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -233,7 +232,7 @@ public final class ASMTransformerFactory
     }
   }
 
-  private final class AddAdviceClassAdapter extends ClassAdapter {
+  private final class AddAdviceClassAdapter extends ClassVisitor {
 
     private final Type m_internalClassType;
     private final Map<Pair<String, String>,
@@ -244,7 +243,7 @@ public final class ASMTransformerFactory
       Type internalClassType,
       Map<Pair<String, String>, List<WeavingDetails>> weavingDetails) {
 
-      super(classVisitor);
+      super(Opcodes.ASM9, classVisitor);
       m_internalClassType = internalClassType;
       m_weavingDetails = weavingDetails;
     }
@@ -325,8 +324,12 @@ public final class ASMTransformerFactory
     }
   }
 
-  private interface ContextMethodVisitor extends MethodVisitor {
+  private interface ContextMethodVisitor {
     Type getInternalClassName();
+
+    void visitVarInsn(int opcode, int variable);
+
+    void visitLdcInsn(Object value);
   }
 
   /**
@@ -363,7 +366,7 @@ public final class ASMTransformerFactory
    * @author Philip Aston
    */
   private final class AdviceMethodVisitor
-    extends MethodAdapter implements ContextMethodVisitor, Opcodes {
+    extends MethodVisitor implements ContextMethodVisitor, Opcodes {
 
     private final Type m_internalClassType;
     private final List<WeavingDetails> m_weavingDetails;
@@ -378,7 +381,7 @@ public final class ASMTransformerFactory
                                 int access,
                                 String name,
                                 List<WeavingDetails> weavingDetails) {
-      super(mv);
+      super(Opcodes.ASM9, mv);
 
       m_internalClassType = internalClassType;
       m_weavingDetails = weavingDetails;
@@ -395,7 +398,7 @@ public final class ASMTransformerFactory
       }
     }
 
-    public Type getInternalClassName() {
+    @Override public Type getInternalClassName() {
       return m_internalClassType;
     }
 
@@ -412,7 +415,8 @@ public final class ASMTransformerFactory
           super.visitMethodInsn(INVOKESTATIC,
                                 m_adviceClass,
                                 "enter",
-                                "(Ljava/lang/Object;Ljava/lang/String;)V");
+                                "(Ljava/lang/Object;Ljava/lang/String;)V",
+                                false);
         }
       }
     }
@@ -438,7 +442,8 @@ public final class ASMTransformerFactory
         super.visitMethodInsn(INVOKESTATIC,
                               m_adviceClass,
                               "exit",
-                              "(Ljava/lang/Object;Ljava/lang/String;Z)V");
+                              "(Ljava/lang/Object;Ljava/lang/String;Z)V",
+                              false);
       }
     }
 
@@ -476,7 +481,7 @@ public final class ASMTransformerFactory
       super.visitFrame(type, nLocal, local, nStack, stack);
     }
 
-    public void visitInsn(int opcode) {
+    @Override public void visitInsn(int opcode) {
       generateEntryBlocks();
 
       switch (opcode) {
@@ -496,22 +501,22 @@ public final class ASMTransformerFactory
       super.visitInsn(opcode);
     }
 
-    public void visitIntInsn(int opcode, int operand) {
+    @Override public void visitIntInsn(int opcode, int operand) {
       generateEntryBlocks();
       super.visitIntInsn(opcode, operand);
     }
 
-    public void visitVarInsn(int opcode, int var) {
+    @Override public void visitVarInsn(int opcode, int var) {
       generateEntryBlocks();
       super.visitVarInsn(opcode, var);
     }
 
-    public void visitTypeInsn(int opcode, String type) {
+    @Override public void visitTypeInsn(int opcode, String type) {
       generateEntryBlocks();
       super.visitTypeInsn(opcode, type);
     }
 
-    public void visitFieldInsn(int opcode,
+    @Override public void visitFieldInsn(int opcode,
                                String owner,
                                String name,
                                String desc) {
@@ -519,45 +524,54 @@ public final class ASMTransformerFactory
       super.visitFieldInsn(opcode, owner, name, desc);
     }
 
-    public void visitMethodInsn(int opcode,
-                                String owner,
-                                String name,
-                                String desc) {
+    @Override public void visitMethodInsn(int opcode,
+                                          String owner,
+                                          String name,
+                                          String desc,
+                                          boolean isInterface) {
       generateEntryBlocks();
-      super.visitMethodInsn(opcode, owner, name, desc);
+      super.visitMethodInsn(opcode, owner, name, desc, isInterface);
     }
 
-    public void visitJumpInsn(int opcode, Label label) {
+    @Override public void visitInvokeDynamicInsn(String name,
+                                                 String desc,
+                                                 Handle bootstrapMethod,
+                                                 Object... bootstrapArgs) {
+      generateEntryBlocks();
+      super.visitInvokeDynamicInsn(name, desc, bootstrapMethod, bootstrapArgs);
+    }
+
+    @Override public void visitJumpInsn(int opcode, Label label) {
       generateEntryBlocks();
       super.visitJumpInsn(opcode, label);
     }
 
-    public void visitLdcInsn(Object cst) {
+    @Override public void visitLdcInsn(Object cst) {
       generateEntryBlocks();
       super.visitLdcInsn(cst);
     }
 
-    public void visitIincInsn(int var, int increment) {
+    @Override public void visitIincInsn(int var, int increment) {
       generateEntryBlocks();
       super.visitIincInsn(var, increment);
     }
 
-    public void visitTableSwitchInsn(int min,
-                                     int max,
-                                     Label dflt,
-                                     Label[] labels) {
+    @Override public void visitTableSwitchInsn(int min,
+                                               int max,
+                                               Label dflt,
+                                               Label... labels) {
       generateEntryBlocks();
       super.visitTableSwitchInsn(min, max, dflt, labels);
     }
 
-    public void visitLookupSwitchInsn(Label dflt,
+    @Override public void visitLookupSwitchInsn(Label dflt,
                                       int[] keys,
                                       Label[] labels) {
       generateEntryBlocks();
       super.visitLookupSwitchInsn(dflt, keys, labels);
     }
 
-    public void visitMultiANewArrayInsn(String desc, int dims) {
+    @Override public void visitMultiANewArrayInsn(String desc, int dims) {
       generateEntryBlocks();
       super.visitMultiANewArrayInsn(desc, dims);
     }
