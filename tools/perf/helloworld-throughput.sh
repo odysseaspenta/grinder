@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Runs one worker against a script from the examples directory with the
 # console disabled and prints wall-clock seconds and the mean test time.
-# The mean comes from the per-run "Test time" column of the worker data log,
-# because the worker's main log (which holds the summary table) is empty on
-# every release since at least 4.0.0.
+# The mean comes from the per-run "Test time" column of the worker data log.
 #
 # usage: helloworld-throughput.sh <distribution root> [script] [runs] [threads]
+# GRINDER_EXTRA_PROPERTIES, if set, is appended to the generated properties file
+# (newline-separated lines such as "grinder.jvm.arguments = -Dgrinder.logLevel=info").
 # <script> is a name in the examples directory, or a path to a script file,
 # such as tools/perf/javacall.py, which is copied next to the examples.
 set -euo pipefail
@@ -32,6 +32,7 @@ grinder.useConsole = false
 grinder.logDirectory = log
 grinder.jvm = $java_home/bin/java
 PROPS
+[ -n "${GRINDER_EXTRA_PROPERTIES:-}" ] && printf '%s\n' "$GRINDER_EXTRA_PROPERTIES" >> "$work/perf.properties"
 
 start=$(date +%s.%N)
 (cd "$work" && "$java_home/bin/java" -cp "$dist/lib/grinder.jar" net.grinder.Grinder perf.properties > agent.out 2>&1)
