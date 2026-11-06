@@ -28,16 +28,21 @@ layout: grinder
 
   <table class="noborder">
     <tr>
-      <td><a href="{{ site.data.links.oracle.java.javase.href }}">Java Standard Edition 6 ("Java 6") or higher</a></td>
+      <td><a href="{{ site.data.links.oracle.java.javase.href }}">Java 21 or higher</a></td>
       <td></td>
     </tr>
     <tr>
-      <td><a href="{{ site.data.links.mvn.href }}">Apache Maven 3.0.3</a></td>
+      <td><a href="{{ site.data.links.mvn.href }}">Apache Maven 3.9 or higher</a></td>
       <td></td>
     </tr>
   </table>
 
-  <p>Dependencies on third party libraries are managed by Maven.</p>
+  <p>Dependencies on third party libraries are managed by Maven. The build
+  compiles for Java 21 (<code>--release 21</code>) and the GitHub Actions
+  workflow runs <code>mvn -B verify</code> on Java 21 and Java 25 for every
+  push and pull request; <code>javac</code> runs with
+  <code>-Xlint:removal -Werror</code>, so a new compiler warning fails the
+  build.</p>
 
   </section>
 

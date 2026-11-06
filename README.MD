@@ -107,6 +107,15 @@ Each test has one of two possible outcomes:
 The _Total_, _Mean_, and _Standard Deviation_ figures are calculated based only on successful tests.
 
 
+# What do I need?
+
+A Java 21 or later runtime on every machine that runs a console, an agent or the TCPProxy. The Grinder is built with
+Java 21 and its test suite runs on Java 21 and 25 in CI. To build from source you also need Apache Maven 3.9 or later;
+`mvn -B verify` builds everything, runs the tests and produces `grinder/target/grinder-<version>-binary.zip`.
+
+The console is also published as a Docker image: `docker run --rm -p 6372:6372 -p 6373:6373 cossme/grinder:<version>`
+serves the web console on port 6373 and listens for agents on port 6372. `docker/Dockerfile` builds it from the zip.
+
 # How do I start The Grinder?
 
 It's easy:
