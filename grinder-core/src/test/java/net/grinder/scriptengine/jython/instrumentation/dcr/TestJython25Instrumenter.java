@@ -46,7 +46,6 @@ import org.python.core.PyProxy;
  * @author Philip Aston
  */
 @RunWith(Jython25Runner.class)
-@Ignore
 public class TestJython25Instrumenter
   extends AbstractJythonDCRInstrumenterTestCase {
 
@@ -68,7 +67,8 @@ public class TestJython25Instrumenter
   }
 
   @Test public void testVersion() throws Exception {
-    assertVersion("2.5");
+    // The suite runs against the shipped Jython, 2.7.4 since P7.
+    assertVersion("2.7");
   }
 
   @Test public void testBrokenPyProxy() throws Exception {
@@ -79,6 +79,7 @@ public class TestJython25Instrumenter
     assertNotWrappable(pyProxy);
   }
 
+  @Ignore("Retransforming a Java class woven for a Jython-bound Java method fails verification in the surefire JVM at the P4 head too, while worker processes instrument the same methods; see the decision trail for 2026-11-06. Carried forward, not a Jython 2.7.4 regression.")
   @Test public void testCreateProxyWithJavaClassAnd__call__() throws Exception {
     m_interpreter.exec("from grinder.test import MyClass");
     final PyObject pyJavaType = m_interpreter.get("MyClass");

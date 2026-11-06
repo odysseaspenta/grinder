@@ -22,7 +22,6 @@
 package net.grinder.scriptengine.jython.instrumentation.dcr;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -43,6 +42,7 @@ import org.python.core.PyObject;
 import org.python.core.PyProxy;
 import org.python.core.PyReflectedConstructor;
 import org.python.core.PyReflectedFunction;
+import org.python.core.ReflectedArgs;
 
 
 /**
@@ -77,27 +77,21 @@ abstract class AbstractJythonDCRInstrumenter extends AbstractDCRInstrumenter {
     extractJavaMethods(PyReflectedFunction pyReflectedFunction)
     throws NonInstrumentableTypeException {
 
-    // ReflectedArgs is package scope in Jython 2.2.1; use reflection
-    // to avoid compilation issues.
-
-    final Object[] argsList = pyReflectedFunction.argslist;
+    final ReflectedArgs[] argsList = pyReflectedFunction.argslist;
     final int nargs = pyReflectedFunction.nargs;
 
     final List<T> result = new ArrayList<T>(nargs);
 
     for (int i = 0; i < nargs; ++i) {
-      final Object argument = argsList[i];
+      // Jython 2.7.4 renamed this field from "data" to "method".
+      final Member member = argsList[i].method;
 
-      try {
-        final Field dataField = argument.getClass().getField("data");
-        dataField.setAccessible(true);
-        result.add((T)dataField.get(argument));
-      }
-      catch (Exception e) {
+      if (member == null) {
         throw new NonInstrumentableTypeException(
-          e.getMessage() + " [" + pyReflectedFunction + "]",
-          e);
+          "No Java member for argument " + i + " [" + pyReflectedFunction + "]");
       }
+
+      result.add((T) member);
     }
 
     return result;
