@@ -6,7 +6,7 @@
   <groupId>io.github.cossme</groupId>
   <artifactId>grinder-parent</artifactId>
   <packaging>pom</packaging>
-  <version>4.0.2-SNAPSHOT</version>
+  <version>4.1.0-SNAPSHOT</version>
   <name>${project.artifactId}</name>
   <url>http://grinder.sourceforge.net</url>
   <description>Parent Maven project for The Grinder load testing framework.</description>
@@ -250,22 +250,6 @@
   </licenses>
 
   <!-- Required so site:stage works. -->
-  <distributionManagement>
-    <snapshotRepository>
-      <id>sonatype-nexus-snapshots</id>
-      <name>Sonatype Nexus snapshot repository</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>sonatype-nexus-staging</id>
-      <name>Sonatype Nexus release repository</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-    <!--site>
-      <id>blah</id>
-      <url>file:///tmp/bah</url>
-    </site-->
-  </distributionManagement>
 
   <scm>
     <connection>scm:git:git://github.com/cossme/grinder.git</connection>
@@ -275,32 +259,19 @@
   </scm>
 
   <profiles>
-    <!--profile>
-      <id>disable-java8-doclint</id>
-      <activation>
-        <jdk>[1.8,)</jdk>
-      </activation>
-      <properties>
-        <additionalparam>-Xdoclint:none</additionalparam>
-      </properties>
-    </profile-->
+    <!-- Signs the artifacts and uploads them to the Maven Central Portal.
+         Used by .github/workflows/release.yml; the server id "central" and
+         the GPG passphrase come from the runner's settings.xml. -->
     <profile>
-      <id>release-sign-artifacts</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
+      <id>release</id>
+      <properties>
+        <central.autoPublish>false</central.autoPublish>
+      </properties>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.4</version>
-            <configuration>
-              <passphrase>${gpg.passphrase}</passphrase>
-            </configuration>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -310,6 +281,17 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.12.0</version>
+            <extensions>true</extensions>
+            <configuration>
+              <publishingServerId>central</publishingServerId>
+              <autoPublish>${central.autoPublish}</autoPublish>
+              <waitUntil>validated</waitUntil>
+            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -452,23 +434,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.4.2</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.scm</groupId>
-            <artifactId>maven-scm-provider-gitexe</artifactId>
-            <version>1.8.1</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <autoVersionSubmodules>true</autoVersionSubmodules>
-          <tagNameFormat>@{project.version}</tagNameFormat>
-          <arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
-        </configuration>
-      </plugin>
     </plugins>
 
     <pluginManagement>
@@ -510,13 +475,10 @@
           <artifactId>maven-dependency-plugin</artifactId>
           <version>3.8.1</version>
         </plugin>
-	<plugin>
-	  <artifactId>maven-gpg-plugin</artifactId>
-	  <configuration>
-	    <keyname>cyril.sole@gmail.com</keyname>
-	  </configuration>
-          <version>1.4</version>
-	</plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>3.2.8</version>
+        </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
           <version>3.1.4</version>
