@@ -7,15 +7,19 @@ on:
 jobs:
   package:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['21', '25']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: ${{ matrix.java }}
           cache: maven
-      - run: mvn -B -Dmaven.javadoc.skip=true verify
+      - run: mvn -B verify
       - uses: actions/upload-artifact@v4
         with:
-          name: grinder-binary
+          name: grinder-binary-jdk${{ matrix.java }}
           path: grinder/target/*-binary.zip
