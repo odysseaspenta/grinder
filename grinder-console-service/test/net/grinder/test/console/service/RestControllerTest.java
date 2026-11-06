@@ -71,6 +71,9 @@ import java.util.regex.Pattern;
 /**
  * Created by solcyr on 28/01/2018.
  */
+// Spring Framework 7 deprecates its JUnit 4 support. The console-service
+// tests stay on JUnit 4 with the rest of the build.
+@SuppressWarnings("deprecation")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes={SpringConsoleFoundation.class})
 @AutoConfigureMockMvc

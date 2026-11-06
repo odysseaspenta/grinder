@@ -233,6 +233,7 @@ public class HTTPResponse implements HTTPClientModuleConstants
      * @exception IOException If any exception occurs on the socket.
      * @exception ModuleException if any module encounters an exception.
      */
+    @Deprecated
     public final String getServer()  throws IOException, ModuleException
     {
 	if (!initialized)  handleResponse();
@@ -262,6 +263,7 @@ public class HTTPResponse implements HTTPClientModuleConstants
      * @deprecated use getEffectiveURI() instead
      * @see #getEffectiveURI
      */
+    @Deprecated
     public final URL getEffectiveURL()  throws IOException, ModuleException
     {
 	if (!initialized)  handleResponse();

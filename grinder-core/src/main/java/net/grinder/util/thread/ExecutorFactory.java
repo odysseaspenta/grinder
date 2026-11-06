@@ -44,7 +44,6 @@ public class ExecutorFactory {
 
     NamedThreadFactory(String name) {
       m_group = new ThreadGroup(name);
-      m_group.setDaemon(true);
     }
 
     public Thread newThread(Runnable runnable) {

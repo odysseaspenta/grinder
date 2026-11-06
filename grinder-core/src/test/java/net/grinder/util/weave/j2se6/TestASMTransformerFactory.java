@@ -21,7 +21,7 @@
 
 package net.grinder.util.weave.j2se6;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import static net.grinder.testutility.AssertUtilities.assertArraysEqual;
 
 import java.io.ByteArrayOutputStream;

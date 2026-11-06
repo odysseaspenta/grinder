@@ -296,6 +296,10 @@ public class TestJavaDCRInstrumenter {
       super(urls, parent);
     }
 
+    // Deprecated since JDK 9, when Class.getPackage() stopped consulting
+    // this method. The override therefore no longer produces a class
+    // without a package, which is why testWithNoPackage is ignored.
+    @SuppressWarnings("deprecation")
     @Override
     protected Package getPackage(String name) {
       return null;

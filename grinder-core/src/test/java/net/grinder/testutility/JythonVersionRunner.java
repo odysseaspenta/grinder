@@ -23,6 +23,7 @@ package net.grinder.testutility;
 
 import static java.util.Arrays.asList;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -92,7 +93,7 @@ public abstract class JythonVersionRunner extends Suite {
 
     for (String pythonHome : pythonHomes) {
       final URL jythonJarURL =
-        new URL("file://" + pythonHome + "/jython.jar");
+        new File(pythonHome, "jython.jar").toURI().toURL();
 
       runners.add(
         new PythonHomeRunner(isolate(testClass, asList(jythonJarURL)),

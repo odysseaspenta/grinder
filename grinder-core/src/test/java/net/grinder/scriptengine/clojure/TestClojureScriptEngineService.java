@@ -96,7 +96,8 @@ public class TestClojureScriptEngineService extends AbstractJUnit4FileTestCase {
 
     final ScriptEngineService service =
       (ScriptEngineService) blockingLoader.loadClass(
-         ClojureScriptEngineService.class.getName()).newInstance();
+         ClojureScriptEngineService.class.getName())
+         .getDeclaredConstructor().newInstance();
 
     try {
       service.createScriptEngine(script);

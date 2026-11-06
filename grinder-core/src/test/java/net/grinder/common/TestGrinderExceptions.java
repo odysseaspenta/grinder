@@ -22,8 +22,10 @@
 package net.grinder.common;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Modifier;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -177,11 +179,7 @@ public class TestGrinderExceptions {
     assertEquals("test2", e2.getMessage());
     assertEquals(e1, e2.getCause());
 
-    try {
-      UncheckedGrinderException.class.newInstance();
-      fail("UncheckedGrinderException is not abstract");
-    }
-    catch (InstantiationException e) {
-    }
+    assertTrue(
+      Modifier.isAbstract(UncheckedGrinderException.class.getModifiers()));
   }
 }

@@ -121,13 +121,10 @@ final class DebugThreadWorkerFactory extends AbstractWorkerFactory {
     final IsolateGrinderProcessRunner runner;
 
     try {
-      runner = (IsolateGrinderProcessRunner)isolatedRunnerClass.newInstance();
+      runner = (IsolateGrinderProcessRunner)
+        isolatedRunnerClass.getDeclaredConstructor().newInstance();
     }
-    catch (InstantiationException e) {
-      throw new EngineException(
-        "Failed to create IsolateGrinderProcessRunner", e);
-    }
-    catch (IllegalAccessException e) {
+    catch (ReflectiveOperationException e) {
       throw new EngineException(
         "Failed to create IsolateGrinderProcessRunner", e);
     }

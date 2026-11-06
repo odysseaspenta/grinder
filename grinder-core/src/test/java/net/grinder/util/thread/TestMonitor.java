@@ -26,7 +26,7 @@ import java.util.TimerTask;
 import net.grinder.common.UncheckedInterruptedException;
 import net.grinder.testutility.Time;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 

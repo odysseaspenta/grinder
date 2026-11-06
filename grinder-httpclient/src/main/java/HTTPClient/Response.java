@@ -333,6 +333,7 @@ public final class Response implements RoResponse, GlobalConstants, Cloneable
      * @deprecated use getEffectiveURI() instead
      * @see #getEffectiveURI
      */
+    @Deprecated
     public final URL getEffectiveURL()  throws IOException
     {
 	return getEffectiveURI().toURL();
@@ -344,6 +345,7 @@ public final class Response implements RoResponse, GlobalConstants, Cloneable
      * @deprecated use setEffectiveURI() instead
      * @see #setEffectiveURI
      */
+    @Deprecated
     public void setEffectiveURL(URL final_url)
     {
 	try

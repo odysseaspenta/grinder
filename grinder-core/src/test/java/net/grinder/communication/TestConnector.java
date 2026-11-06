@@ -21,8 +21,8 @@
 
 package net.grinder.communication;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static net.grinder.testutility.AssertUtilities.assertContains;
 import static net.grinder.testutility.AssertUtilities.assertNotEquals;
 

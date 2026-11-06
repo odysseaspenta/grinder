@@ -22,7 +22,7 @@
 package net.grinder.engine.process;
 
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static net.grinder.testutility.AssertUtilities.assertContains;
 import static net.grinder.testutility.FileUtilities.createFile;
 import static org.junit.Assert.assertTrue;

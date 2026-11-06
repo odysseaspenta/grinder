@@ -23,7 +23,7 @@ package net.grinder.testutility;
 
 import java.util.ArrayList;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlObject;

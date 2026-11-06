@@ -21,7 +21,7 @@
 
 package net.grinder.communication;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 
 /**

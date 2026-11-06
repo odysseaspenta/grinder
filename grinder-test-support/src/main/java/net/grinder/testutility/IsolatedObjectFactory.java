@@ -47,7 +47,7 @@ public class IsolatedObjectFactory {
 
   public static Object getIsolatedObject() {
     try {
-      return getIsolatedObjectClass().newInstance();
+      return getIsolatedObjectClass().getDeclaredConstructor().newInstance();
     }
     catch (Exception e) {
       throw new AssertionError(e);
