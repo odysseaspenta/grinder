@@ -6,6 +6,8 @@
 # every release since at least 4.0.0.
 #
 # usage: helloworld-throughput.sh <distribution root> [script] [runs] [threads]
+# <script> is a name in the examples directory, or a path to a script file,
+# such as tools/perf/javacall.py, which is copied next to the examples.
 set -euo pipefail
 
 dist=$(cd "$1" && pwd)
@@ -17,6 +19,10 @@ java_home=${JAVA_HOME:-/usr}
 work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 cp -r "$dist/examples/." "$work/"
+if [ -f "$script" ]; then
+  cp "$script" "$work/"
+  script=$(basename "$script")
+fi
 cat > "$work/perf.properties" <<PROPS
 grinder.script = $script
 grinder.processes = 1
