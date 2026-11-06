@@ -56,10 +56,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicLong;
-import java.applet.Applet;
 
 import javax.net.ssl.*;
-import javax.security.cert.X509Certificate;
+import java.security.cert.X509Certificate;
 
 /**
  * This class implements http protocol requests; it contains most of HTTP/1.1
@@ -631,19 +630,6 @@ public class HTTPConnection implements GlobalConstants, HTTPClientModuleConstant
     /** --GRINDER MODIFICATION **/
 
     // Constructors
-
-    /**
-     * Constructs a connection to the host from where the applet was loaded.
-     * Note that current security policies only let applets connect home.
-     *
-     * @param applet the current applet
-     */
-    public HTTPConnection(Applet applet)  throws ProtocolNotSuppException
-    {
-	this(applet.getCodeBase().getProtocol(),
-	     applet.getCodeBase().getHost(),
-	     applet.getCodeBase().getPort());
-    }
 
     /**
      * Constructs a connection to the specified host on port 80
@@ -2148,7 +2134,8 @@ public class HTTPConnection implements GlobalConstants, HTTPClientModuleConstant
 
 	// check if module implements HTTPClientModule
 	try
-	    { HTTPClientModule tmp = (HTTPClientModule) module.newInstance(); }
+	    { HTTPClientModule tmp = (HTTPClientModule)
+				module.getDeclaredConstructor().newInstance(); }
 	catch (RuntimeException re)
 	    { throw re; }
 	catch (Exception e)
@@ -2869,7 +2856,8 @@ public class HTTPConnection implements GlobalConstants, HTTPClientModuleConstant
 	    {
 		Class mod = (Class) ModuleList.elementAt(idx);
 		try
-		    { mod_insts[idx] = (HTTPClientModule) mod.newInstance(); }
+		    { mod_insts[idx] = (HTTPClientModule)
+				    mod.getDeclaredConstructor().newInstance(); }
 		catch (Exception e)
 		{
 		    throw new Error("HTTPClient Internal Error: could not " +
@@ -3239,8 +3227,8 @@ public class HTTPConnection implements GlobalConstants, HTTPClientModuleConstant
 
                 if (getCheckCertificates()) {
                     /** --GRINDER MODIFICATION **/
-                    checkCert(((SSLSocket) sock).getSession().
-                        getPeerCertificateChain()[0], Host);
+                    checkCert((X509Certificate) ((SSLSocket) sock).
+                        getSession().getPeerCertificates()[0], Host);
 
                 /** GRINDER MODIFICATION++ **/
                 }
@@ -3690,7 +3678,8 @@ public class HTTPConnection implements GlobalConstants, HTTPClientModuleConstant
 	String name = null;
 	try
 	{
-	    for (Rdn rdn : new LdapName(cert.getSubjectDN().getName()).getRdns())
+	    for (Rdn rdn : new LdapName(
+				cert.getSubjectX500Principal().getName()).getRdns())
 	    {
 		if ("CN".equalsIgnoreCase(rdn.getType()))
 		    name = String.valueOf(rdn.getValue()).toLowerCase();
