@@ -21,7 +21,6 @@
 
 package net.grinder.plugin.http.tcpproxyfilter;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,8 +54,13 @@ public final class XSLTHelper {
   }
 
   /**
-   * Convert an ISO 8601 date/time string to a more friendly, locale specific
-   * string.
+   * Convert an ISO 8601 date/time string to the form used in the header of a
+   * generated script.
+   *
+   * <p>The result is plain ASCII. The locale-specific format used before
+   * put a narrow no-break space before "PM" on JDK 20 and later, and Jython
+   * refuses a script with a non-ASCII character and no encoding
+   * declaration.</p>
    *
    * @param iso8601
    *          An extended format ISO 8601 date/time string
@@ -67,7 +71,7 @@ public final class XSLTHelper {
   public static String formatTime(String iso8601) throws ParseException {
     final Date date =
       new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(iso8601);
-    return DateFormat.getDateTimeInstance().format(date);
+    return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
   }
 
   /**

@@ -139,8 +139,10 @@ public class TestXSLTHelper {
     catch (ParseException e) {
     }
 
-    final String s = XSLTHelper.formatTime("2005-01-04T18:30:00");
-    assertNotNull(s);
+    // Plain ASCII: Jython rejects a non-ASCII script header, and the JDK's
+    // locale format puts a narrow no-break space before "PM" since JDK 20.
+    assertEquals("2005-01-04 18:30:00",
+                 XSLTHelper.formatTime("2005-01-04T18:30:00"));
   }
 
   @Test public void testQuoteForPython() throws Exception {
