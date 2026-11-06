@@ -697,7 +697,10 @@ public class HttpURLConnection extends java.net.HttpURLConnection
      *
      * @param name  the name of the header.
      * @param value the value for the header.
+     * @deprecated the method it hides, URLConnection.setDefaultRequestProperty,
+     *             is deprecated.
      */
+    @Deprecated
     public static void setDefaultRequestProperty(String name, String value)
     {
 	Log.write(Log.URLC, "URLC:  Setting default request property: " +
@@ -722,7 +725,10 @@ public class HttpURLConnection extends java.net.HttpURLConnection
      *
      * @param name  the name of the header.
      * @return the value part of the header, or null if no such header.
+     * @deprecated the method it hides, URLConnection.getDefaultRequestProperty,
+     *             is deprecated.
      */
+    @Deprecated
     public static String getDefaultRequestProperty(String name)
     {
 	for (int idx=0; idx<default_headers.length; idx++)

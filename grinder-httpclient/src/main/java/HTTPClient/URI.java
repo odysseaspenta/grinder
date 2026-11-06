@@ -975,7 +975,7 @@ public class URI
 	if (url != null)  return url;
 
 	if (opaque != null)
-	    return (url = new URL(scheme + ":" + opaque));
+	    return (url = java.net.URI.create(scheme + ":" + opaque).toURL());
 
 	String hostinfo;
 	if (userinfo != null  &&  host != null)
@@ -988,7 +988,8 @@ public class URI
 	StringBuffer file = new StringBuffer(100);
 	assemblePath(file, true, true, false);
 
-	url = new URL(scheme, hostinfo, port, file.toString());
+	url = java.net.URI.create(scheme + "://" + hostinfo +
+				  (port == -1 ? "" : ":" + port) + file).toURL();
 	return url;
     }
 

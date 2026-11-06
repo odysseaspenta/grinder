@@ -344,6 +344,9 @@ public class Cookie implements Serializable
      * @param set_cookie the complete Set-Cookie header
      * @return true if the attribute is legal; false otherwise
      */
+    // Date(String) accepts the many expiry formats servers send;
+    // Util.parseHttpDate was found too strict, see below.
+    @SuppressWarnings("deprecation")
     private static boolean setAttribute(Cookie cookie, String name,
           String value, String set_cookie)
       throws ProtocolException
