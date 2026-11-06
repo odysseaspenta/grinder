@@ -63,6 +63,75 @@ public class TestRecorderLocator extends TestCase {
     RecorderLocator.clearRecorders();
   }
 
+  // In a separate method so that no interpreter frame keeps the target
+  // reachable after the call.
+  private void registerThrowawayTarget() {
+    m_recorderRegistry.register(new Object(), "location", m_recorder);
+  }
+
+  public void testTargetIsCollectedAfterUnreachable() throws Exception {
+    registerThrowawayTarget();
+    assertEquals(1, RecorderLocator.registeredTargetCount());
+
+    // Nothing else writes to the registry: the entry has to go by itself.
+    final long deadline = System.currentTimeMillis() + 5000;
+
+    while (RecorderLocator.registeredTargetCount() != 0) {
+      if (System.currentTimeMillis() > deadline) {
+        fail("The entry for an unreachable target was not collected");
+      }
+
+      System.gc();
+      Thread.sleep(20);
+    }
+  }
+
+  public void testTwoEqualButDistinctTargetsAreSeparate() throws Exception {
+    // Two targets that are equal() but not the same object each see only
+    // their own recorder: the registry compares targets by identity and
+    // never calls their equals() or hashCode().
+    final String target = new String("target");
+    final String target2 = new String("target");
+    assertEquals(target, target2);
+    assertNotSame(target, target2);
+
+    m_recorderRegistry.register(target, "location", m_recorder);
+    m_recorderRegistry.register(target2, "location", m_recorder2);
+    assertEquals(2, RecorderLocator.registeredTargetCount());
+
+    RecorderLocator.enter(target, "location");
+    m_recorderStubFactory.assertSuccess("start");
+    m_recorderStubFactory.assertNoMoreCalls();
+    m_recorderStubFactory2.assertNoMoreCalls();
+
+    RecorderLocator.enter(target2, "location");
+    m_recorderStubFactory2.assertSuccess("start");
+    m_recorderStubFactory2.assertNoMoreCalls();
+    m_recorderStubFactory.assertNoMoreCalls();
+  }
+
+  public void testTargetWhoseHashCodeAndEqualsThrowIsNotCalled()
+    throws Exception {
+    // Jython targets run Python code from hashCode()/equals(); the registry
+    // must never call them.
+    final Object target = new Object() {
+      @Override public int hashCode() {
+        throw new AssertionError("hashCode called");
+      }
+
+      @Override public boolean equals(Object o) {
+        throw new AssertionError("equals called");
+      }
+    };
+
+    m_recorderRegistry.register(target, "location", m_recorder);
+    RecorderLocator.enter(target, "location");
+    m_recorderStubFactory.assertSuccess("start");
+    RecorderLocator.exit(target, "location", true);
+    m_recorderStubFactory.assertSuccess("end", true);
+    m_recorderStubFactory.assertNoMoreCalls();
+  }
+
   public void testNullBehaviour() throws Exception {
     RecorderLocator.enter(this, "foo");
     RecorderLocator.exit(this, "foo", false);
@@ -98,9 +167,12 @@ public class TestRecorderLocator extends TestCase {
     m_recorderStubFactory.assertSuccess("end", false);
     m_recorderStubFactory.assertNoMoreCalls();
 
-    // Interned strings shouldn't match.
+    // Locations are compared by equals(); woven code passes interned
+    // constants, so this only matters for callers that build their own.
     RecorderLocator.enter(target, new String("location"));
+    m_recorderStubFactory.assertSuccess("start");
     RecorderLocator.exit(target, new String("location"), true);
+    m_recorderStubFactory.assertSuccess("end", true);
     m_recorderStubFactory.assertNoMoreCalls();
   }
 

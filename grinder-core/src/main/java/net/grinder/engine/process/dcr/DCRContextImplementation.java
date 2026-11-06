@@ -48,7 +48,6 @@ public final class DCRContextImplementation implements DCRContext {
 
   private static final String[] NON_INSTRUMENTABLE_PACKAGES = {
     "net.grinder.engine.process",
-    "extra166y",
     "org.objectweb.asm",
   };
 

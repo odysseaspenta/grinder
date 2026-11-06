@@ -36,11 +36,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.codehaus.jsr166-mirror</groupId>
-      <artifactId>extra166y</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.picocontainer</groupId>
       <artifactId>picocontainer</artifactId>
     </dependency>
@@ -160,35 +155,6 @@
          </execution>
        </executions>
      </plugin>
-
-
-      <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
-              <filters>
-                <filter>
-                  <artifact>org.codehaus.jsr166-mirror:extra166y</artifact>
-                  <includes>
-                    <include>**/CustomConcurrentHashMap*</include>
-                  </includes>
-                </filter>
-              </filters>
-              <artifactSet>
-                <includes>
-                  <include>org.codehaus.jsr166-mirror:extra166y</include>
-                </includes>
-              </artifactSet>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
 
       <plugin>
         <artifactId>maven-site-plugin</artifactId>

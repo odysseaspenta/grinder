@@ -21,20 +21,16 @@
 
 package net.grinder.engine.process.dcr;
 
-import static extra166y.CustomConcurrentHashMap.IDENTITY;
-import static extra166y.CustomConcurrentHashMap.STRONG;
-import static extra166y.CustomConcurrentHashMap.WEAK;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import net.grinder.common.UncheckedGrinderException;
 import net.grinder.engine.common.EngineException;
 import net.grinder.scriptengine.Recorder;
-import extra166y.CustomConcurrentHashMap;
 
 
 /**
@@ -55,19 +51,28 @@ public final class RecorderLocator implements RecorderRegistry {
   }
 
   /**
-   * Target reference -> location -> recorder list. Location strings are
-   * interned, so we use an identity hash map for both maps. We use concurrent
-   * structures throughout to avoid synchronisation. The target reference is the
-   * first key to minimise the cost of traversing woven code for
-   * non-instrumented references, which is important if {@code Object}, {@code
-   * PyObject}, etc. are instrumented.
+   * Accessor for the unit tests.
+   *
+   * @return The number of targets with an entry, including any that have
+   *         been collected but not yet removed.
    */
-  private final ConcurrentMap<Object,
-                              ConcurrentMap<String, List<Recorder>>>
-  m_recorders =
-      new CustomConcurrentHashMap<Object,
-                                  ConcurrentMap<String, List<Recorder>>>(
-            WEAK, IDENTITY, STRONG, IDENTITY, 101);
+  static int registeredTargetCount() {
+    return s_instance.m_recorders.size();
+  }
+
+  /**
+   * Target reference -> location -> recorder list. Targets are compared by
+   * identity and held weakly; see {@link WeakIdentityConcurrentMap}. Woven
+   * code passes locations as {@code ldc} constants, which the JVM interns,
+   * and {@link #register} interns the location it stores, so a hit on the
+   * inner map takes {@code ConcurrentHashMap}'s identity short-circuit. We
+   * use concurrent structures throughout to avoid synchronisation. The target
+   * reference is the first key to minimise the cost of traversing woven code
+   * for non-instrumented references, which is important if {@code Object},
+   * {@code PyObject}, etc. are instrumented.
+   */
+  private final WeakIdentityConcurrentMap<ConcurrentMap<String, List<Recorder>>>
+    m_recorders = new WeakIdentityConcurrentMap<>();
 
   private List<Recorder> getRecorderList(Object target,
                                          String locationID) {
@@ -190,20 +195,21 @@ public final class RecorderLocator implements RecorderRegistry {
                                  String location,
                                  Recorder recorder) {
 
-    // We will create and quickly discard many maps and lists here to avoid
-    // needing to lock the ConcurrentMaps. It is important that the
-    // enter/exit methods are lock free, the instrumentation registration
-    // process can be relatively slow.
+    // We may create and discard a map or a list here rather than lock the
+    // ConcurrentMaps. It is important that the enter/exit methods are lock
+    // free, the instrumentation registration process can be relatively slow.
 
-    final ConcurrentMap<String, List<Recorder>> newMap =
-      new CustomConcurrentHashMap<String, List<Recorder>>(
-            STRONG, IDENTITY, STRONG, IDENTITY, 0);
+    ConcurrentMap<String, List<Recorder>> locationMap = m_recorders.get(target);
 
-    final ConcurrentMap<String, List<Recorder>> oldMap =
-      m_recorders.putIfAbsent(target, newMap);
+    if (locationMap == null) {
+      final ConcurrentMap<String, List<Recorder>> newMap =
+        new ConcurrentHashMap<String, List<Recorder>>();
 
-    final ConcurrentMap<String, List<Recorder>> locationMap =
-      oldMap != null ? oldMap : newMap;
+      final ConcurrentMap<String, List<Recorder>> oldMap =
+        m_recorders.putIfAbsent(target, newMap);
+
+      locationMap = oldMap != null ? oldMap : newMap;
+    }
 
     final List<Recorder> newList = new CopyOnWriteArrayList<Recorder>();
 
