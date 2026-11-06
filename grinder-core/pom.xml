@@ -171,6 +171,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
               <filters>
                 <filter>
                   <artifact>org.codehaus.jsr166-mirror:extra166y</artifact>
