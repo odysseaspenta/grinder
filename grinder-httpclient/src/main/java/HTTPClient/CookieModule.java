@@ -108,9 +108,6 @@ public class CookieModule implements HTTPClientModule
     /** the file to use for persistent cookie storage */
     private static File cookie_jar = null;
 
-    /** an object, whose finalizer will save the cookies to the jar */
-    private static Object cookieSaver = null;
-
     /** the cookie policy handler */
     private static CookiePolicyHandler cookie_handler =
 					    new DefaultCookiePolicyHandler();
@@ -131,12 +128,8 @@ public class CookieModule implements HTTPClientModule
 	{
 	    loadCookies();
 
-	    // the nearest thing to atexit() I know of...
-
-	    cookieSaver = new Object()
-		{
-		    public void finalize() { saveCookies(); }
-		};
+	    Runtime.getRuntime().addShutdownHook(
+			new Thread(CookieModule::saveCookies, "CookieModule"));
 	}
     }
 

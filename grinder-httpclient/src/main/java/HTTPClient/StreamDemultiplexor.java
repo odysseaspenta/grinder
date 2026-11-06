@@ -72,9 +72,6 @@ class StreamDemultiplexor implements GlobalConstants
     /** timer thread which implements the timers */
     private static SocketTimeout   TimerThread = null;
 
-    /** cleanup object to stop timer thread when we're gc'd */
-    private static Object          cleanup;
-
     /** a Vector to hold the list of response handlers were serving */
     private LinkedList             RespHandlerList;
 
@@ -89,25 +86,6 @@ class StreamDemultiplexor implements GlobalConstants
     {
 	TimerThread = new SocketTimeout(60);
 	TimerThread.start();
-
-	/* This is here to clean up the timer thread should the
-	 * StreamDemultiplexor class be gc'd. This will not usually happen,
-	 * unless the stuff is being run in an Applet or similar environment
-	 * where multiple classloaders are used to load the same class
-	 * multiple times. However, even in those environments it's not clear
-	 * that this here will do us any good, because classes aren't usually
-	 * gc'd unless their classloader is, but the timer thread keeps a
-	 * reference to the classloader, and hence ought to prevent the
-	 * classloader from being gc'd.
-	 */
-	cleanup = new Object() {
-	    private final SocketTimeout timer = StreamDemultiplexor.TimerThread;
-
-	    protected void finalize()
-	    {
-		timer.kill();
-	    }
-	};
     }
 
 
@@ -458,8 +436,7 @@ class StreamDemultiplexor implements GlobalConstants
      * occurs during read or write. 2) if the stream is marked for close but
      * no responses are outstanding (e.g. due to a timeout). 3) when the
      * markedForClose response is closed. 4) if all response streams up until
-     * and including the markedForClose response have been closed. 5) if this
-     * demux is finalized.
+     * and including the markedForClose response have been closed.
      *
      * @param exception the IOException to be sent to the streams.
      * @param was_reset if true then the exception is due to a connection
@@ -760,16 +737,6 @@ class StreamDemultiplexor implements GlobalConstants
 		Connection.DemuxList.remove(this);
 	    }
 	}
-    }
-
-
-    /**
-     * A safety net to close the connection.
-     */
-    protected void finalize() throws Throwable
-    {
-	close((IOException) null, false);
-	super.finalize();
     }
 
 
