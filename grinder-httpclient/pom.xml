@@ -22,15 +22,4 @@
     </license>
   </licenses>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <showDeprecation>false</showDeprecation>
-          <showWarnings>false</showWarnings>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

@@ -501,6 +501,10 @@
             <release>21</release>
             <showDeprecation>true</showDeprecation>
             <showWarnings>true</showWarnings>
+            <compilerArgs>
+              <arg>-Xlint:removal</arg>
+              <arg>-Werror</arg>
+            </compilerArgs>
           </configuration>
         </plugin>
         <plugin>
