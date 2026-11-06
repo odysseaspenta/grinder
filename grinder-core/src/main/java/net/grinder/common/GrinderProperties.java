@@ -101,7 +101,9 @@ public class GrinderProperties extends Properties {
   public GrinderProperties(File file) throws PersistenceException {
     setAssociatedFile(file);
 
-    if (m_file.exists()) {
+    // isFile(), not exists(): since JDK 25 the empty path exists as the
+    // working directory, and callers pass new File("") for "no file".
+    if (m_file.isFile()) {
       InputStream propertiesInputStream = null;
       try {
         propertiesInputStream = new FileInputStream(m_file);
