@@ -30,6 +30,7 @@ import java.io.PrintWriter;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stax.StAXSource;
@@ -57,12 +58,27 @@ public class ProcessHTTPRecordingWithXSLT implements
   public static final String STYLESHEET_NAME_PROPERTY =
       "transformHTTPRecordingToScript";
 
-  private final TransformerFactory m_transformerFactory = TransformerFactory
-      .newInstance();
+  private final TransformerFactory m_transformerFactory =
+      createTransformerFactory();
 
   private final InputStream m_styleSheetInputStream;
 
   private final PrintWriter m_output;
+
+  private static TransformerFactory createTransformerFactory() {
+    final TransformerFactory factory = TransformerFactory.newInstance();
+
+    // The stylesheets call XSLTHelper. JDK 24 and later disable extension
+    // functions by default.
+    try {
+      factory.setFeature("jdk.xml.enableExtensionFunctions", true);
+    }
+    catch (TransformerConfigurationException e) {
+      // Another processor, which does not know the switch.
+    }
+
+    return factory;
+  }
 
   private final Logger m_logger;
 
