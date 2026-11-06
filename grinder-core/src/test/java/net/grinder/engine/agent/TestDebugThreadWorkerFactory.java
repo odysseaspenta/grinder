@@ -27,6 +27,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.io.InputStream;
 import java.lang.instrument.Instrumentation;
 
@@ -90,6 +91,50 @@ public class TestDebugThreadWorkerFactory extends AbstractJUnit4FileTestCase {
     final File[] files = getDirectory().listFiles();
 
     assertEquals(2, files.length);
+  }
+
+  /**
+   * The worker's main log must carry the INFO lines, including those a script
+   * writes through grinder.logger. It held only warnings from 4.0.0 until
+   * logback-worker.xml gave the worker logger its own level.
+   */
+  @Test public void testWorkerLogHoldsTheRunAndTheFinalStatistics()
+    throws Exception {
+
+    final File script = new File(getDirectory(), "script.py");
+    Files.writeString(script.toPath(),
+                      "from net.grinder.script.Grinder import grinder\n" +
+                      "class TestRunner:\n" +
+                      "    def __call__(self):\n" +
+                      "        grinder.logger.info('hello from the script')\n");
+
+    m_properties.setProperty("grinder.logDirectory",
+                             getDirectory().getAbsolutePath());
+    m_properties.setInt("grinder.runs", 1);
+    m_properties.setInt("grinder.threads", 1);
+
+    final DebugThreadWorkerFactory factory =
+      new DebugThreadWorkerFactory(m_agentIdentity,
+                                   m_fanOutStreamSender,
+                                   false,
+                                   new ScriptLocation(script),
+                                   m_properties);
+
+    new RedirectStandardStreams() {
+      protected void runWithRedirectedStreams() throws Exception {
+        final Worker worker = factory.create(null, null);
+        worker.waitFor();
+      }
+    }.run();
+
+    final File[] logs =
+      getDirectory().listFiles((dir, name) -> name.endsWith("-0.log"));
+    assertEquals(1, logs.length);
+
+    final String log = Files.readString(logs[0].toPath());
+    assertContains(log, "The Grinder version");
+    assertContains(log, "hello from the script");
+    assertContains(log, "Final statistics for this process");
   }
 
   @Test public void testWithBadIsolatedRunner() throws Exception {

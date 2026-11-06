@@ -37,7 +37,10 @@
   </appender>
 
 
-  <logger name="worker" additivity="false">
+  <!-- logback.xml is loaded first and sets the root level to warn by
+       default; without a level of its own this logger would inherit it and
+       the worker log would hold nothing but warnings. -->
+  <logger name="worker" level="${grinder.logLevel:-info}" additivity="false">
     <appender-ref ref="log-file" />
   </logger>
 
