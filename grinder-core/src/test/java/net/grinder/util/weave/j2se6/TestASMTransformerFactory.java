@@ -26,6 +26,7 @@ import static net.grinder.testutility.AssertUtilities.assertArraysEqual;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.instrument.ClassFileTransformer;
@@ -386,6 +387,67 @@ public class TestASMTransformerFactory /*extends TestCase */ {
     s_callRecorder.assertNoMoreCalls();
 
     instrumentation.removeTransformer(transformer);
+  }
+
+  @Test public void testWeavesClassWithInvokedynamic() throws Exception {
+    final Instrumentation instrumentation = getInstrumentation();
+
+    final ClassFileTransformerFactory transformerFactory =
+      new ASMTransformerFactory(MyAdvice.class);
+
+    m_pointCutRegistryStubFactory.addMethod(
+      IndyTarget.class, IndyTarget.class.getDeclaredMethod("lambda"), "loc1");
+    m_pointCutRegistryStubFactory.addMethod(
+      IndyTarget.class,
+      IndyTarget.class.getDeclaredMethod("concat", Integer.TYPE),
+      "loc2");
+
+    final ClassFileTransformer transformer =
+      transformerFactory.create(m_pointCutRegistry);
+
+    // retransformClasses() discards exceptions thrown by a transformer, so
+    // call the transformer directly to surface a class parsing failure.
+    final byte[] transformed =
+      transformer.transform(IndyTarget.class.getClassLoader(),
+                            IndyTarget.class.getName().replace('.', '/'),
+                            IndyTarget.class,
+                            IndyTarget.class.getProtectionDomain(),
+                            classBytes(IndyTarget.class));
+    assertNotNull(transformed);
+
+    instrumentation.addTransformer(transformer, true);
+    instrumentation.retransformClasses(new Class[] { IndyTarget.class });
+
+    final IndyTarget target = new IndyTarget();
+    assertEquals(7, target.lambda());
+
+    s_callRecorder.assertSuccess("enter", target, "loc1");
+    s_callRecorder.assertSuccess("exit", target, "loc1", true);
+    s_callRecorder.assertNoMoreCalls();
+
+    assertEquals("n=7", target.concat(7));
+
+    s_callRecorder.assertSuccess("enter", target, "loc2");
+    s_callRecorder.assertSuccess("exit", target, "loc2", true);
+    s_callRecorder.assertNoMoreCalls();
+
+    instrumentation.removeTransformer(transformer);
+  }
+
+  private static byte[] classBytes(Class<?> c) throws IOException {
+    final InputStream in =
+      c.getResourceAsStream(c.getSimpleName() + ".class");
+    assertNotNull(in);
+
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final byte[] buffer = new byte[4096];
+    int n;
+
+    while ((n = in.read(buffer)) != -1) {
+      out.write(buffer, 0, n);
+    }
+
+    return out.toByteArray();
   }
 
   @Ignore ("solcyr: This tests fails but I lack knowledge to understand it")
