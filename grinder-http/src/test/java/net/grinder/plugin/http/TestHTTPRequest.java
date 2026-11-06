@@ -43,8 +43,16 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import net.grinder.common.GrinderException;
 import net.grinder.common.SSLContextFactory;
@@ -147,6 +155,42 @@ public class TestHTTPRequest {
 
   @After public void tearDown() throws Exception {
     m_handler.shutdown();
+  }
+
+  /**
+   * Surefire runs this module with --finalization=disabled, so the
+   * connections have to reach the server as closed through beginRun() alone.
+   */
+  @Test public void testBeginRunClosesEveryConnection() throws Exception {
+    final KeepAliveServer server = new KeepAliveServer();
+    final List<HTTPPluginThreadState> threadStates = new ArrayList<>();
+
+    try {
+      for (int i = 0; i < 50; ++i) {
+        final HTTPPluginThreadState threadState =
+          new HTTPPluginThreadState(m_threadContext,
+                                    m_sslContextFactory,
+                                    null,
+                                    new StandardTimeAuthority());
+        when(m_pluginProcessContext.getPluginThreadListener())
+          .thenReturn(threadState);
+        threadStates.add(threadState);
+
+        final HTTPResponse response = new HTTPRequest().GET(server.getURL());
+        assertEquals(200, response.getStatusCode());
+      }
+
+      assertEquals(50, server.getOpenConnections());
+
+      for (final HTTPPluginThreadState threadState : threadStates) {
+        threadState.beginRun();
+      }
+
+      server.assertNoOpenConnectionsWithin(10000);
+    }
+    finally {
+      server.shutdown();
+    }
   }
 
   @Test public void testTimeout() throws Exception {
@@ -1326,6 +1370,89 @@ public class TestHTTPRequest {
     @Override
     public long getTimeInMilliseconds() {
       return m_times[++m_last];
+    }
+  }
+
+  /**
+   * Answers every request on a connection and keeps the connection open until
+   * the client closes it, counting the connections that are still open.
+   */
+  private static final class KeepAliveServer implements Runnable {
+    private static final byte[] RESPONSE =
+      "HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nOK"
+      .getBytes(StandardCharsets.US_ASCII);
+
+    private final ServerSocket m_serverSocket = new ServerSocket(0);
+    private final AtomicInteger m_openConnections = new AtomicInteger();
+
+    KeepAliveServer() throws IOException {
+      new Thread(this, getClass().getName()).start();
+    }
+
+    String getURL() {
+      return "http://localhost:" + m_serverSocket.getLocalPort();
+    }
+
+    int getOpenConnections() {
+      return m_openConnections.get();
+    }
+
+    void assertNoOpenConnectionsWithin(final long millis)
+      throws InterruptedException {
+      final long deadline = System.currentTimeMillis() + millis;
+
+      while (m_openConnections.get() != 0 &&
+             System.currentTimeMillis() < deadline) {
+        Thread.sleep(10);
+      }
+
+      assertEquals(0, m_openConnections.get());
+    }
+
+    void shutdown() throws IOException {
+      m_serverSocket.close();
+    }
+
+    @Override public void run() {
+      while (true) {
+        final Socket socket;
+
+        try {
+          socket = m_serverSocket.accept();
+        }
+        catch (final IOException e) {
+          return;
+        }
+
+        m_openConnections.incrementAndGet();
+        new Thread(() -> serve(socket), getClass().getName()).start();
+      }
+    }
+
+    private void serve(final Socket socket) {
+      try (socket) {
+        final InputStream in = socket.getInputStream();
+        final OutputStream out = socket.getOutputStream();
+        int matched = 0;
+        int b;
+
+        while ((b = in.read()) != -1) {
+          matched = b == "\r\n\r\n".charAt(matched) ? matched + 1 :
+                    b == '\r' ? 1 : 0;
+
+          if (matched == 4) {
+            out.write(RESPONSE);
+            out.flush();
+            matched = 0;
+          }
+        }
+      }
+      catch (final IOException e) {
+        // The client reset the connection; it is closed either way.
+      }
+      finally {
+        m_openConnections.decrementAndGet();
+      }
     }
   }
 }

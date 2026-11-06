@@ -91,7 +91,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-javaagent:${org.mockito:mockito-core:jar} -javaagent:${project.build.directory}/grinder-dcr-agent.jar</argLine>
+          <argLine>--finalization=disabled -javaagent:${org.mockito:mockito-core:jar} -javaagent:${project.build.directory}/grinder-dcr-agent.jar</argLine>
         </configuration>
       </plugin>
 
