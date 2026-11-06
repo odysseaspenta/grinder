@@ -108,7 +108,7 @@ public class TestStatisticsForTestImplementation extends TestCase {
     catch (NoSuchStatisticException e) {
     }
 
-    m_dispatchContextStubFactory.setResult("getElapsedTime", new Long(123));
+    m_dispatchContextStubFactory.setResult("getElapsedTime", Long.valueOf(123));
     assertEquals(123, statisticsForTest.getTime());
 
     statisticsForTest.setSuccess(true);

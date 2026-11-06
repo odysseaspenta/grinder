@@ -38,10 +38,10 @@ public class TestAllocateLowestNumberImplementation extends TestCase {
   public void testAllocateLowestNumber() throws Exception {
     final AllocateLowestNumber set = new AllocateLowestNumberImplementation();
 
-    final Integer object1 = new Integer(121);
-    final Integer object2 = new Integer(1);
-    final Integer object3 = new Integer(3);
-    final Integer object4 = new Integer(31);
+    final Integer object1 = Integer.valueOf(121);
+    final Integer object2 = Integer.valueOf(1);
+    final Integer object3 = Integer.valueOf(3);
+    final Integer object4 = Integer.valueOf(31);
 
     assertEquals(0, set.add(object1));
     assertEquals(0, set.add(object1));
@@ -59,7 +59,7 @@ public class TestAllocateLowestNumberImplementation extends TestCase {
 
     set.forEach(new IteratorCallback() {
       public void objectAndNumber(Object object, int number) {
-        assertEquals(expectation.remove(object), new Integer(number));
+        assertEquals(expectation.remove(object), Integer.valueOf(number));
       }
     });
 

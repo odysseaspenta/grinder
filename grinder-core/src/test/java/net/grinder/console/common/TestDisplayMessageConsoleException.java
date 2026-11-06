@@ -59,8 +59,8 @@ public class TestDisplayMessageConsoleException extends TestCase {
     final DisplayMessageConsoleException e4 =
       new DisplayMessageConsoleException(resources, "sum", 
                                          new Object[]{
-                                           new Integer(1),
-                                           new Integer(2),
+                                           Integer.valueOf(1),
+                                           Integer.valueOf(2),
                                            "three"
                                          });
 
@@ -83,7 +83,7 @@ public class TestDisplayMessageConsoleException extends TestCase {
     final DisplayMessageConsoleException e7 =
       new DisplayMessageConsoleException(resources,
                                          "numberOfFiles",
-                                         new Object[] { new Integer(2) },
+                                         new Object[] { Integer.valueOf(2) },
                                          e6);
 
     assertEquals("There are 2 files", e7.getMessage());

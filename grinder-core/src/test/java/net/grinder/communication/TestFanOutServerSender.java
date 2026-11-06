@@ -133,7 +133,7 @@ public class TestFanOutServerSender {
         new Connector(InetAddress.getByName(null).getHostName(),
                       acceptor.getPort(),
                       ConnectionType.AGENT)
-        .connect(new StubAddress(new Integer(i)));
+        .connect(new StubAddress(Integer.valueOf(i)));
     }
 
     // Sleep until we've accepted all connections. Give up after a few
@@ -147,8 +147,8 @@ public class TestFanOutServerSender {
     final SimpleMessage message1 = new SimpleMessage();
     final SimpleMessage message2 = new SimpleMessage();
 
-    serverSender.send(new StubAddress(new Integer(1)), message1);
-    serverSender.send(new StubAddress(new Integer(2)), message2);
+    serverSender.send(new StubAddress(Integer.valueOf(1)), message1);
+    serverSender.send(new StubAddress(Integer.valueOf(2)), message2);
 
     for (int i = 0; i < socket.length; ++i) {
       final InputStream socketInput = socket[i].getInputStream();

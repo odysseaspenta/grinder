@@ -49,7 +49,7 @@ import org.junit.Test;
 public class TestBarrierGroupMessages {
 
   private final BarrierIdentity.Factory m_identityFactory =
-    new BarrierIdentityGenerator(new Integer(1));
+    new BarrierIdentityGenerator(Integer.valueOf(1));
 
   @Test public void testOpenBarrierMessage() throws Exception {
 

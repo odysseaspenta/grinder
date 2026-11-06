@@ -105,7 +105,7 @@ public class TestConsoleConnectionImplementation extends TestCase {
       new ConsoleConnectionImplementation(m_sender);
 
     m_senderStubFactory.setResult(
-      "blockingSend", new ResultMessage(new Integer(10)));
+      "blockingSend", new ResultMessage(Integer.valueOf(10)));
     assertEquals(10, consoleConnection.getNumberOfAgents());
     m_senderStubFactory.assertSuccess("blockingSend",
       GetNumberOfAgentsMessage.class);

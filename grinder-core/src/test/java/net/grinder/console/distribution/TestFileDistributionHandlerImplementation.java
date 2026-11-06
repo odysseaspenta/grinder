@@ -87,7 +87,7 @@ public class TestFileDistributionHandlerImplementation
       "clearFileCaches", Address.class);
 
     m_agentSetStubFactory.assertSuccess(
-      "getAddressOfOutOfDateAgents", new Long(0));
+      "getAddressOfOutOfDateAgents", Long.valueOf(0));
 
     m_distributionControlStubFactory.assertSuccess("sendFile",
                                                  Address.class,
@@ -95,7 +95,7 @@ public class TestFileDistributionHandlerImplementation
 
     m_agentSetStubFactory.assertSuccess(
       "getAddressOfOutOfDateAgents",
-      new Long(new File(getDirectory(), m_files[0].getPath()).lastModified()));
+      Long.valueOf(new File(getDirectory(), m_files[0].getPath()).lastModified()));
 
     m_agentSetStubFactory.assertNoMoreCalls();
 
@@ -111,7 +111,7 @@ public class TestFileDistributionHandlerImplementation
 
     m_agentSetStubFactory.assertSuccess(
       "getAddressOfOutOfDateAgents",
-      new Long(new File(getDirectory(), m_files[1].getPath()).lastModified()));
+      Long.valueOf(new File(getDirectory(), m_files[1].getPath()).lastModified()));
 
     m_agentSetStubFactory.assertNoMoreCalls();
 

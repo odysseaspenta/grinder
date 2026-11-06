@@ -226,7 +226,7 @@ public class TestRecording {
             public String getDescription() { return label; }
             @Override
             public int compareTo(net.grinder.common.Test o) {
-                return new Integer(id).compareTo(new Integer(o.getNumber()));
+                return Integer.valueOf(id).compareTo(Integer.valueOf(o.getNumber()));
             }
         };
     }
@@ -289,12 +289,12 @@ public class TestRecording {
         Assert.assertEquals(2, tests.size());
 
         Map<String,Object> test = tests.get(0);
-        Assert.assertEquals(new Integer(1), (Integer)test.get("test"));
+        Assert.assertEquals(Integer.valueOf(1), (Integer)test.get("test"));
         Assert.assertEquals("test one", (String)test.get("description"));
         Assert.assertEquals("[0, 0, NaN, 0.0, NaN]", test.get("statistics").toString());
 
         test = tests.get(1);
-        Assert.assertEquals(new Integer(2), (Integer)test.get("test"));
+        Assert.assertEquals(Integer.valueOf(2), (Integer)test.get("test"));
         Assert.assertEquals("test two", (String)test.get("description"));
         Assert.assertEquals("[0, 0, NaN, 0.0, NaN]", test.get("statistics").toString());
 
@@ -358,12 +358,12 @@ public class TestRecording {
         Assert.assertEquals(2, tests.size());
 
         Map<String,Object> test = tests.get(0);
-        Assert.assertEquals(new Integer(1), (Integer)test.get("test"));
+        Assert.assertEquals(Integer.valueOf(1), (Integer)test.get("test"));
         Assert.assertEquals("test one", (String)test.get("description"));
         Assert.assertEquals("[0, 0]", test.get("statistics").toString());
 
         test = tests.get(1);
-        Assert.assertEquals(new Integer(2), (Integer)test.get("test"));
+        Assert.assertEquals(Integer.valueOf(2), (Integer)test.get("test"));
         Assert.assertEquals("test two", (String)test.get("description"));
         Assert.assertEquals("[0, 0]", test.get("statistics").toString());
     }

@@ -58,7 +58,7 @@ public class TestHTTPRequestFilter extends TestCase {
     final byte[] result = filter.handle(m_connectionDetails, buffer, 56);
     assertNull(result);
     connectionMapStubFactory.assertSuccess(
-      "request", m_connectionDetails, buffer, new Integer(56));
+      "request", m_connectionDetails, buffer, Integer.valueOf(56));
 
     filter.connectionClosed(m_connectionDetails);
     connectionMapStubFactory.assertSuccess("close", m_connectionDetails);

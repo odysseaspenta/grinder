@@ -149,9 +149,9 @@ public class TestProcessReportDescriptionFactory extends TestCase {
     workerProcessReportStubFactory.setResult(
       "getState", ProcessReport.State.RUNNING);
     workerProcessReportStubFactory.setResult(
-      "getNumberOfRunningThreads", new Short((short) 10));
+      "getNumberOfRunningThreads", Short.valueOf((short) 10));
     workerProcessReportStubFactory.setResult(
-      "getMaximumNumberOfThreads", new Short((short) 21));
+      "getMaximumNumberOfThreads", Short.valueOf((short) 21));
 
     final ProcessDescription description2 =
       processReportDescriptionFactory.create(workerProcessReport);

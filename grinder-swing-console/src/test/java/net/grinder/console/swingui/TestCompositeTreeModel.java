@@ -95,7 +95,7 @@ public class TestCompositeTreeModel extends TestCase {
     assertEquals("Child2",
                  compositeTreeModel.getChild(delegateRoot1, 1).toString());
     delegateModelStubFactory1.assertSuccess("getChild", delegateRoot1,
-                                            new Integer(1));
+                                            Integer.valueOf(1));
 
     assertEquals(1, compositeTreeModel.getChildCount(root));
     assertEquals(2, compositeTreeModel.getChildCount(delegateRoot1));
@@ -122,7 +122,7 @@ public class TestCompositeTreeModel extends TestCase {
     assertEquals("Child1",
                  compositeTreeModel.getChild(delegateRoot1, 0).toString());
     delegateModelStubFactory1.assertSuccess("getChild", delegateRoot1,
-                                            new Integer(0));
+                                            Integer.valueOf(0));
     assertEquals("Child1", compositeTreeModel.getChild(root, 1).toString());
     assertEquals("Child2", compositeTreeModel.getChild(root, 2).toString());
 

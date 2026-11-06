@@ -130,7 +130,7 @@ public class TestFiles {
                 Assert.assertNull(history.get(index).getPercentComplete());
             }
             else {
-                Assert.assertEquals(history.get(index).getPercentComplete(), new Integer(pctComplete));
+                Assert.assertEquals(history.get(index).getPercentComplete(), Integer.valueOf(pctComplete));
             }
             Assert.assertEquals(history.get(index).getFiles(), Arrays.asList(files));
             if (error == null) {

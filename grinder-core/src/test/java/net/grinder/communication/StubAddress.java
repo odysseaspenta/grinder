@@ -34,7 +34,7 @@ public final class StubAddress implements Address {
   private final Object m_identity;
 
   public StubAddress() {
-    this(new Integer(s_random.nextInt()));
+    this(Integer.valueOf(s_random.nextInt()));
   }
 
   public StubAddress(Object identity) {

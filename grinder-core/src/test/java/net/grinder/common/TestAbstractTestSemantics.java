@@ -63,7 +63,7 @@ public class TestAbstractTestSemantics extends TestCase {
     assertEquals(t1, t2);
     assertEquals(t2, t1);
     assertTrue(!t1.equals(t3));
-    assertTrue(!t1.equals(new Integer(10)));
+    assertTrue(!t1.equals(Integer.valueOf(10)));
     assertEquals(t3, t4);
     assertTrue(!t2.equals(t4));
   }

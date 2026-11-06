@@ -37,7 +37,7 @@ public class TimeAuthorityStubFactory extends RandomStubFactory<TimeAuthority> {
   private List<Long> m_nextTimes = new ArrayList<Long>();
 
   public void nextTime(long time) {
-    m_nextTimes.add(new Long(time));
+    m_nextTimes.add(Long.valueOf(time));
   }
 
   public long override_getTimeInMilliseconds(Object proxy) {

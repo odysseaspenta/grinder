@@ -91,11 +91,11 @@ public class TestDispatchClientCommands extends TestCase {
     modelStubFactory.assertNoMoreCalls();
 
     processControlStubFactory.setResult(
-      "getNumberOfLiveAgents", new Integer(3));
+      "getNumberOfLiveAgents", Integer.valueOf(3));
     final ResultMessage message =
       (ResultMessage)blockingSender.blockingSend(
         new GetNumberOfAgentsMessage());
-    assertEquals(new Integer(3), message.getResult());
+    assertEquals(Integer.valueOf(3), message.getResult());
 
     final GrinderProperties grinderProperties = new GrinderProperties();
     assertTrue(

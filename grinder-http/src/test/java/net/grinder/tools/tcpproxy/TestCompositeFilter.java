@@ -83,17 +83,17 @@ public class TestCompositeFilter extends TestCase {
     m_filter1StubFactory.assertSuccess("handle",
                                        m_connectionDetails,
                                        buffer,
-                                       new Integer(10));
+                                       Integer.valueOf(10));
 
     m_filter2StubFactory.assertSuccess("handle",
                                        m_connectionDetails,
                                        buffer,
-                                       new Integer(100));
+                                       Integer.valueOf(100));
 
     m_filter1StubFactory.assertSuccess("handle",
                                        m_connectionDetails,
                                        buffer2,
-                                       new Integer(20));
+                                       Integer.valueOf(20));
 
     m_filter1StubFactory.assertNoMoreCalls();
     m_filter2StubFactory.assertNoMoreCalls();
@@ -105,17 +105,17 @@ public class TestCompositeFilter extends TestCase {
     m_filter1StubFactory.assertSuccess("handle",
                                        m_connectionDetails,
                                        buffer,
-                                       new Integer(10));
+                                       Integer.valueOf(10));
 
     m_filter2StubFactory.assertSuccess("handle",
                                        m_connectionDetails,
                                        buffer,
-                                       new Integer(100));
+                                       Integer.valueOf(100));
 
     m_filter1StubFactory.assertSuccess("handle",
                                        m_connectionDetails,
                                        buffer,
-                                       new Integer(100));
+                                       Integer.valueOf(100));
   }
 
   public void testConnectionOpened() throws Exception {

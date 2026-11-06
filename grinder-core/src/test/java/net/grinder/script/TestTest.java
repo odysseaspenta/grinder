@@ -82,7 +82,7 @@ public class TestTest {
     final List<Integer> keys = new ArrayList<Integer>(size);
 
     for (int i=0; i<size; i++) {
-      keys.add(new Integer(i));
+      keys.add(Integer.valueOf(i));
     }
 
     Collections.shuffle(keys);
@@ -130,7 +130,7 @@ public class TestTest {
     final Test t1 = new Test(1, "six cars");
     new Test(2, "house in ireland");
 
-    final Integer i = new Integer(10);
+    final Integer i = Integer.valueOf(10);
 
     t1.wrap(i);
 
@@ -142,7 +142,7 @@ public class TestTest {
   @org.junit.Test public void testRecord() throws Exception {
     final Test t1 = new Test(1, "bigger than your dad");
 
-    final Integer i = new Integer(10);
+    final Integer i = Integer.valueOf(10);
 
     t1.record(i);
 
@@ -152,7 +152,7 @@ public class TestTest {
   @org.junit.Test public void testSelectiveRecord() throws Exception {
     final Test t1 = new Test(1, "travelling funk band");
 
-    final Integer i = new Integer(10);
+    final Integer i = Integer.valueOf(10);
 
     t1.record(i, m_instrumentationFilter);
 

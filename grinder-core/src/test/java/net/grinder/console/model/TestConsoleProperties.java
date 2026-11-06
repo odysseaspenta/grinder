@@ -845,7 +845,7 @@ public class TestConsoleProperties extends AbstractJUnit4FileTestCase {
       while (i3 == i2);
 
       final PropertyChangeEvent expected = new PropertyChangeEvent(properties2,
-        m_propertyName, new Integer(i2), new Integer(i3));
+        m_propertyName, Integer.valueOf(i2), Integer.valueOf(i3));
 
       final ChangeListener listener = new ChangeListener(expected);
       final ChangeListener listener2 = new ChangeListener(expected);

@@ -37,7 +37,7 @@ public class TestPair extends TestCase {
   public void testBasics() throws Exception {
     final Pair<Integer, String> p1 = Pair.of(3, "123");
 
-    assertEquals(new Integer(3), p1.getFirst());
+    assertEquals(Integer.valueOf(3), p1.getFirst());
     assertEquals("123", p1.getSecond());
 
     assertEquals("(3, 123)", p1.toString());

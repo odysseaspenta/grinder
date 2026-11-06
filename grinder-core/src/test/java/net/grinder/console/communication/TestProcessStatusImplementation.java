@@ -362,12 +362,12 @@ public class TestProcessStatusImplementation extends TestCase {
     public void schedule(TimerTask timerTask, long delay, long period) {
       assertEquals(0, delay);
 
-      m_taskByPeriod.put(new Long(period), timerTask);
+      m_taskByPeriod.put(Long.valueOf(period), timerTask);
       ++m_numberOfScheduledTasks;
     }
 
     public TimerTask getTaskByPeriod(long period) {
-      return m_taskByPeriod.get(new Long(period));
+      return m_taskByPeriod.get(Long.valueOf(period));
     }
 
     public int getNumberOfScheduledTasks() {

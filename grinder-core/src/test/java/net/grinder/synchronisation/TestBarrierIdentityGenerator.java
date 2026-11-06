@@ -38,7 +38,7 @@ public class TestBarrierIdentityGenerator {
 
   @Test public void testIdentityGeneration() {
     final BarrierIdentityGenerator generator =
-      new BarrierIdentityGenerator(new Integer(1));
+      new BarrierIdentityGenerator(Integer.valueOf(1));
 
     final BarrierIdentity one = generator.next();
     final BarrierIdentity two = generator.next();
@@ -49,7 +49,7 @@ public class TestBarrierIdentityGenerator {
 
   @Test public void testIdentityIsSerializable() throws Exception {
     final BarrierIdentityGenerator generator =
-      new BarrierIdentityGenerator(new Integer(1));
+      new BarrierIdentityGenerator(Integer.valueOf(1));
 
     final BarrierIdentity id = generator.next();
 
@@ -60,7 +60,7 @@ public class TestBarrierIdentityGenerator {
 
   @Test public void testIdentityEquality() throws Exception {
     final BarrierIdentityGenerator generator =
-      new BarrierIdentityGenerator(new Integer(1));
+      new BarrierIdentityGenerator(Integer.valueOf(1));
 
     final BarrierIdentity one = generator.next();
     final BarrierIdentity two = generator.next();

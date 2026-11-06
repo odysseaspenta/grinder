@@ -434,13 +434,13 @@ public class TestEditorModel extends AbstractJUnit4FileTestCase {
     listenerStubFactory.assertSuccess("bufferStateChanged", buffer);
     listenerStubFactory.assertNoMoreCalls();
     m_agentCacheStateStubFactory.assertSuccess("setNewFileTime",
-                                               new Long(file1.lastModified()));
+                                               Long.valueOf(file1.lastModified()));
     m_agentCacheStateStubFactory.assertNoMoreCalls();
 
     buffer.save(file1);
     listenerStubFactory.assertNoMoreCalls();
     m_agentCacheStateStubFactory.assertSuccess("setNewFileTime",
-                                               new Long(file1.lastModified()));
+                                               Long.valueOf(file1.lastModified()));
     m_agentCacheStateStubFactory.assertNoMoreCalls();
 
     assertEquals(buffer, editorModel.getBufferForFile(file1));
@@ -451,7 +451,7 @@ public class TestEditorModel extends AbstractJUnit4FileTestCase {
     listenerStubFactory.assertSuccess("bufferStateChanged", buffer);
     listenerStubFactory.assertNoMoreCalls();
     m_agentCacheStateStubFactory.assertSuccess("setNewFileTime",
-                                               new Long(file2.lastModified()));
+                                               Long.valueOf(file2.lastModified()));
     m_agentCacheStateStubFactory.assertNoMoreCalls();
 
     assertNull(editorModel.getBufferForFile(file1));

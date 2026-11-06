@@ -48,7 +48,7 @@ public final class StubTimer extends Timer {
     m_lastScheduledTimerTask = timerTask;
     m_lastDelay = delay;
     m_lastPeriod = period;
-    m_taskByPeriod.put(new Long(period), timerTask);
+    m_taskByPeriod.put(Long.valueOf(period), timerTask);
   }
 
   public void schedule(TimerTask timerTask, long delay) {
@@ -71,6 +71,6 @@ public final class StubTimer extends Timer {
   }
 
   public TimerTask getTaskByPeriod(long period) {
-    return m_taskByPeriod.get(new Long(period));
+    return m_taskByPeriod.get(Long.valueOf(period));
   }
 }

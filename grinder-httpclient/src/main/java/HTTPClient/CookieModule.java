@@ -336,7 +336,7 @@ public class CookieModule implements HTTPClientModule
 			    break;
 
 		    names.insertElementAt(cookie.toExternalForm(), idx);
-		    lens.insertElementAt(new Integer(len), idx);
+		    lens.insertElementAt(Integer.valueOf(len), idx);
 
 // ** OME **
 //		    if (cookie instanceof Cookie2)

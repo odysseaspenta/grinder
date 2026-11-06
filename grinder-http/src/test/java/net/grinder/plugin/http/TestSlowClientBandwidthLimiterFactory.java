@@ -55,31 +55,31 @@ public class TestSlowClientBandwidthLimiterFactory extends TestCase {
     final BandwidthLimiter slowClientBandwidthLimiter =
       slowClientBandwidthLimiterFactory.create();
 
-    sleeperStubFactory.setResult("getTimeInMilliseconds", new Long(10000));
+    sleeperStubFactory.setResult("getTimeInMilliseconds", Long.valueOf(10000));
 
     assertEquals(100, slowClientBandwidthLimiter.maximumBytes(0));
     sleeperStubFactory.assertSuccess("getTimeInMilliseconds");
-    sleeperStubFactory.assertSuccess("sleepNormal", new Long(0), new Long(0));
+    sleeperStubFactory.assertSuccess("sleepNormal", Long.valueOf(0), Long.valueOf(0));
     sleeperStubFactory.assertNoMoreCalls();
 
-    sleeperStubFactory.setResult("getTimeInMilliseconds", new Long(10010));
+    sleeperStubFactory.setResult("getTimeInMilliseconds", Long.valueOf(10010));
     assertEquals(100, slowClientBandwidthLimiter.maximumBytes(100));
     sleeperStubFactory.assertSuccess("getTimeInMilliseconds");
     sleeperStubFactory.assertSuccess(
-      "sleepNormal", new Long(1580), new Long(0));
+      "sleepNormal", Long.valueOf(1580), Long.valueOf(0));
     sleeperStubFactory.assertNoMoreCalls();
 
-    sleeperStubFactory.setResult("getTimeInMilliseconds", new Long(12000));
+    sleeperStubFactory.setResult("getTimeInMilliseconds", Long.valueOf(12000));
     assertEquals(100, slowClientBandwidthLimiter.maximumBytes(200));
     sleeperStubFactory.assertSuccess("getTimeInMilliseconds");
     sleeperStubFactory.assertSuccess(
-      "sleepNormal", new Long(1380), new Long(0));
+      "sleepNormal", Long.valueOf(1380), Long.valueOf(0));
     sleeperStubFactory.assertNoMoreCalls();
 
-    sleeperStubFactory.setResult("getTimeInMilliseconds", new Long(20000));
+    sleeperStubFactory.setResult("getTimeInMilliseconds", Long.valueOf(20000));
     assertEquals(100, slowClientBandwidthLimiter.maximumBytes(200));
     sleeperStubFactory.assertSuccess("getTimeInMilliseconds");
-    sleeperStubFactory.assertSuccess("sleepNormal", new Long(0), new Long(0));
+    sleeperStubFactory.assertSuccess("sleepNormal", Long.valueOf(0), Long.valueOf(0));
     sleeperStubFactory.assertNoMoreCalls();
   }
 }

@@ -46,31 +46,31 @@ public final class RandomObjectFactory {
     }
 
     if (Character.TYPE == type || Character.class == type) {
-      return new Character((char) m_random.nextInt());
+      return Character.valueOf((char) m_random.nextInt());
     }
 
     if (Byte.TYPE == type || Byte.class == type) {
-      return new Byte((byte) m_random.nextInt(0x100));
+      return Byte.valueOf((byte) m_random.nextInt(0x100));
     }
 
     if (Short.TYPE == type || Short.class == type) {
-      return new Short((short) m_random.nextInt(0x10000));
+      return Short.valueOf((short) m_random.nextInt(0x10000));
     }
 
     if (Integer.TYPE == type || Integer.class == type) {
-      return new Integer(m_random.nextInt());
+      return Integer.valueOf(m_random.nextInt());
     }
 
     if (Long.TYPE == type || Long.class == type) {
-      return new Long(m_random.nextLong());
+      return Long.valueOf(m_random.nextLong());
     }
 
     if (Float.TYPE == type || Float.class == type) {
-      return new Float(m_random.nextFloat());
+      return Float.valueOf(m_random.nextFloat());
     }
 
     if (Double.TYPE == type || Double.class == type) {
-      return new Double(m_random.nextDouble());
+      return Double.valueOf(m_random.nextDouble());
     }
 
     if (Void.TYPE == type) {
