@@ -27,11 +27,13 @@
     </encoder>
   </appender>
 
-  <appender name="stderr" class="ch.qos.logback.core.ConsoleAppender">
+  <!-- All tcpproxy log output is sent to stderr so that filters can generate
+       scripts to stdout. -->
+  <appender name="tcpproxy_stderr" class="ch.qos.logback.core.ConsoleAppender">
     <target>System.err</target>
 
     <encoder>
-      <pattern>%d %-5level %logger: %message%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level: %message%n</pattern>
     </encoder>
   </appender>
 
@@ -40,16 +42,8 @@
     <appender-ref ref="filtered_stdout" />
   </root>
 
-  <!-- All tcpproxy log output is sent to stderr so that filters can generate
-       scripts to stdout. -->
   <logger name="tcpproxy" level="${tcpproxy.logLevel:-info}" additivity="false">
-    <appender class="ch.qos.logback.core.ConsoleAppender">
-      <target>System.err</target>
-
-	    <encoder>
-	      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level: %message%n</pattern>
-	    </encoder>
-	  </appender>
+    <appender-ref ref="tcpproxy_stderr" />
   </logger>
 
 </configuration>

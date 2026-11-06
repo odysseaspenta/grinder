@@ -442,7 +442,7 @@ public class TestThreadContextImplementation {
 
     final Marker marker = threadContext.getLogMarker();
     assertEquals("thread-2", marker.getName());
-    assertFalse(marker.hasReferences());
+    assertEquals("thread-2", marker.toString());
   }
 
   @Test public void testGetLogMarkerWithRun() throws Exception {
@@ -456,13 +456,13 @@ public class TestThreadContextImplementation {
 
     final Marker marker = threadContext.getLogMarker();
     assertEquals("thread-2", marker.getName());
-    assertTrue(marker.contains("run-3"));
+    assertEquals("thread-2 [ run-3 ]", marker.toString());
 
     threadContext.setCurrentRunNumber(4);
-    assertTrue(marker.contains("run-4"));
+    assertEquals("thread-2 [ run-4 ]", marker.toString());
 
     threadContext.setCurrentRunNumber(-1);
-    assertFalse(marker.hasReferences());
+    assertEquals("thread-2", marker.toString());
   }
 
   @Test public void testGetLogMarkerWithTest() throws Exception {
@@ -476,12 +476,15 @@ public class TestThreadContextImplementation {
 
     final Marker marker = threadContext.getLogMarker();
     assertEquals("thread-2", marker.getName());
-    assertTrue(marker.contains("test-3"));
+    assertEquals("thread-2 [ test-3 ]", marker.toString());
 
     threadContext.setTestLogMarker(MarkerFactory.getMarker("test-4"));
-    assertTrue(marker.contains("test-4"));
+    assertEquals("thread-2 [ test-4 ]", marker.toString());
+
+    threadContext.setCurrentRunNumber(7);
+    assertEquals("thread-2 [ run-7, test-4 ]", marker.toString());
 
     threadContext.setTestLogMarker(null);
-    assertFalse(marker.hasReferences());
+    assertEquals("thread-2 [ run-7 ]", marker.toString());
   }
 }

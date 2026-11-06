@@ -574,7 +574,7 @@ final class GrinderProcess {
     }
 
     // Logback doesn't stop its loggers on exit (see LBCORE-202). We do
-    // so explicitly to flush our BufferedEchoMessageEncoder.
+    // so explicitly to flush the buffered data log appender.
     if (m_logbackLoggerContext != null) {
       m_logbackLoggerContext.stop();
     }

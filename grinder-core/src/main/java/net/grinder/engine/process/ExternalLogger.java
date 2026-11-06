@@ -23,16 +23,20 @@ package net.grinder.engine.process;
 
 import org.slf4j.Logger;
 import org.slf4j.Marker;
-import org.slf4j.helpers.MarkerIgnoringBase;
 
 
 /**
- * {@link Logger} implementation for external consumption. Delegates to the
- * another {@code Logger}, providing the appropriate context specific markers.
+ * {@link Logger} implementation for external consumption. Delegates to
+ * another {@code Logger}, adding the calling thread's context marker to the
+ * calls that have none. Calls that carry their own marker pass it through.
+ *
+ * <p>Implements {@code Logger} directly rather than through SLF4J's
+ * {@code AbstractLogger}, which would funnel every call through a level check
+ * and a normalised form and so change which delegate method is called.</p>
  *
  * @author Philip Aston
  */
-final class ExternalLogger extends MarkerIgnoringBase {
+final class ExternalLogger implements Logger {
 
   private final Logger m_delegate;
   private final ThreadContextLocator m_threadContextLocator;
@@ -54,220 +58,257 @@ final class ExternalLogger extends MarkerIgnoringBase {
     return null;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public String getName() {
     return m_delegate.getName();
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public boolean isTraceEnabled() {
     return m_delegate.isTraceEnabled(getMarker());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override public boolean isTraceEnabled(Marker marker) {
+    return m_delegate.isTraceEnabled(marker);
+  }
+
   @Override public void trace(String msg) {
     m_delegate.trace(getMarker(), msg);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void trace(String format, Object arg) {
     m_delegate.trace(getMarker(), format, arg);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void trace(String format, Object arg1, Object arg2) {
     m_delegate.trace(getMarker(), format, arg1, arg2);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override public void trace(String format, Object[] argArray) {
-    m_delegate.trace(getMarker(), format, argArray);
+  @Override public void trace(String format, Object... arguments) {
+    m_delegate.trace(getMarker(), format, arguments);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void trace(String msg, Throwable t) {
     m_delegate.trace(getMarker(), msg, t);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override public void trace(Marker marker, String msg) {
+    m_delegate.trace(marker, msg);
+  }
+
+  @Override public void trace(Marker marker, String format, Object arg) {
+    m_delegate.trace(marker, format, arg);
+  }
+
+  @Override public void trace(Marker marker, String format, Object arg1,
+                            Object arg2) {
+    m_delegate.trace(marker, format, arg1, arg2);
+  }
+
+  @Override public void trace(Marker marker, String format,
+                            Object... arguments) {
+    m_delegate.trace(marker, format, arguments);
+  }
+
+  @Override public void trace(Marker marker, String msg, Throwable t) {
+    m_delegate.trace(marker, msg, t);
+  }
+
   @Override public boolean isDebugEnabled() {
     return m_delegate.isDebugEnabled(getMarker());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override public boolean isDebugEnabled(Marker marker) {
+    return m_delegate.isDebugEnabled(marker);
+  }
+
   @Override public void debug(String msg) {
     m_delegate.debug(getMarker(), msg);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void debug(String format, Object arg) {
     m_delegate.debug(getMarker(), format, arg);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void debug(String format, Object arg1, Object arg2) {
     m_delegate.debug(getMarker(), format, arg1, arg2);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override public void debug(String format, Object[] argArray) {
-    m_delegate.debug(getMarker(), format, argArray);
+  @Override public void debug(String format, Object... arguments) {
+    m_delegate.debug(getMarker(), format, arguments);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void debug(String msg, Throwable t) {
     m_delegate.debug(getMarker(), msg, t);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override public void debug(Marker marker, String msg) {
+    m_delegate.debug(marker, msg);
+  }
+
+  @Override public void debug(Marker marker, String format, Object arg) {
+    m_delegate.debug(marker, format, arg);
+  }
+
+  @Override public void debug(Marker marker, String format, Object arg1,
+                            Object arg2) {
+    m_delegate.debug(marker, format, arg1, arg2);
+  }
+
+  @Override public void debug(Marker marker, String format,
+                            Object... arguments) {
+    m_delegate.debug(marker, format, arguments);
+  }
+
+  @Override public void debug(Marker marker, String msg, Throwable t) {
+    m_delegate.debug(marker, msg, t);
+  }
+
   @Override public boolean isInfoEnabled() {
     return m_delegate.isInfoEnabled(getMarker());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override public boolean isInfoEnabled(Marker marker) {
+    return m_delegate.isInfoEnabled(marker);
+  }
+
   @Override public void info(String msg) {
     m_delegate.info(getMarker(), msg);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void info(String format, Object arg) {
     m_delegate.info(getMarker(), format, arg);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void info(String format, Object arg1, Object arg2) {
     m_delegate.info(getMarker(), format, arg1, arg2);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override public void info(String format, Object[] argArray) {
-    m_delegate.info(getMarker(), format, argArray);
+  @Override public void info(String format, Object... arguments) {
+    m_delegate.info(getMarker(), format, arguments);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void info(String msg, Throwable t) {
     m_delegate.info(getMarker(), msg, t);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override public void info(Marker marker, String msg) {
+    m_delegate.info(marker, msg);
+  }
+
+  @Override public void info(Marker marker, String format, Object arg) {
+    m_delegate.info(marker, format, arg);
+  }
+
+  @Override public void info(Marker marker, String format, Object arg1,
+                            Object arg2) {
+    m_delegate.info(marker, format, arg1, arg2);
+  }
+
+  @Override public void info(Marker marker, String format,
+                            Object... arguments) {
+    m_delegate.info(marker, format, arguments);
+  }
+
+  @Override public void info(Marker marker, String msg, Throwable t) {
+    m_delegate.info(marker, msg, t);
+  }
+
   @Override public boolean isWarnEnabled() {
     return m_delegate.isWarnEnabled(getMarker());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override public boolean isWarnEnabled(Marker marker) {
+    return m_delegate.isWarnEnabled(marker);
+  }
+
   @Override public void warn(String msg) {
     m_delegate.warn(getMarker(), msg);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void warn(String format, Object arg) {
     m_delegate.warn(getMarker(), format, arg);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void warn(String format, Object arg1, Object arg2) {
     m_delegate.warn(getMarker(), format, arg1, arg2);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override public void warn(String format, Object[] argArray) {
-    m_delegate.warn(getMarker(), format, argArray);
+  @Override public void warn(String format, Object... arguments) {
+    m_delegate.warn(getMarker(), format, arguments);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void warn(String msg, Throwable t) {
     m_delegate.warn(getMarker(), msg, t);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override public void warn(Marker marker, String msg) {
+    m_delegate.warn(marker, msg);
+  }
+
+  @Override public void warn(Marker marker, String format, Object arg) {
+    m_delegate.warn(marker, format, arg);
+  }
+
+  @Override public void warn(Marker marker, String format, Object arg1,
+                            Object arg2) {
+    m_delegate.warn(marker, format, arg1, arg2);
+  }
+
+  @Override public void warn(Marker marker, String format,
+                            Object... arguments) {
+    m_delegate.warn(marker, format, arguments);
+  }
+
+  @Override public void warn(Marker marker, String msg, Throwable t) {
+    m_delegate.warn(marker, msg, t);
+  }
+
   @Override public boolean isErrorEnabled() {
     return m_delegate.isErrorEnabled(getMarker());
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override public boolean isErrorEnabled(Marker marker) {
+    return m_delegate.isErrorEnabled(marker);
+  }
+
   @Override public void error(String msg) {
     m_delegate.error(getMarker(), msg);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void error(String format, Object arg) {
     m_delegate.error(getMarker(), format, arg);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void error(String format, Object arg1, Object arg2) {
     m_delegate.error(getMarker(), format, arg1, arg2);
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override public void error(String format, Object[] argArray) {
-    m_delegate.error(getMarker(), format, argArray);
+  @Override public void error(String format, Object... arguments) {
+    m_delegate.error(getMarker(), format, arguments);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override public void error(String msg, Throwable t) {
     m_delegate.error(getMarker(), msg, t);
+  }
+
+  @Override public void error(Marker marker, String msg) {
+    m_delegate.error(marker, msg);
+  }
+
+  @Override public void error(Marker marker, String format, Object arg) {
+    m_delegate.error(marker, format, arg);
+  }
+
+  @Override public void error(Marker marker, String format, Object arg1,
+                            Object arg2) {
+    m_delegate.error(marker, format, arg1, arg2);
+  }
+
+  @Override public void error(Marker marker, String format,
+                            Object... arguments) {
+    m_delegate.error(marker, format, arguments);
+  }
+
+  @Override public void error(Marker marker, String msg, Throwable t) {
+    m_delegate.error(marker, msg, t);
   }
 }

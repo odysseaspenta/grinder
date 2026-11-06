@@ -24,7 +24,12 @@
     class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${PREFIX}-data.log</file>
 
-    <encoder class="net.grinder.util.logback.BufferedEchoMessageEncoder"/>
+    <!-- The data log is written per test, so buffer it; the worker stops
+         the logger context on exit, which flushes. -->
+    <immediateFlush>false</immediateFlush>
+    <bufferSize>64KB</bufferSize>
+
+    <encoder class="net.grinder.util.logback.EchoMessageEncoder"/>
 
     <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
       <fileNamePattern>${PREFIX}-data.log%i</fileNamePattern>

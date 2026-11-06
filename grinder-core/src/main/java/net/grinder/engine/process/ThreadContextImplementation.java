@@ -58,7 +58,7 @@ final class ThreadContextImplementation implements ThreadContext {
     new DispatchContextStack();
 
   private final int m_threadNumber;
-  private final Marker m_threadMarker;
+  private final ThreadLogMarker m_threadMarker;
   private final DispatchResultReporter m_dispatchResultReporter;
 
   private SSLContextFactory m_sslContextFactory;
@@ -69,10 +69,7 @@ final class ThreadContextImplementation implements ThreadContext {
 
   private StatisticsForTest m_statisticsForLastTest;
 
-  private Marker m_runMarker;
   private int m_runNumber = -1;
-
-  private Marker m_testMarker;
 
   private volatile boolean m_shutdown;
   private boolean m_shutdownReported;
@@ -84,7 +81,7 @@ final class ThreadContextImplementation implements ThreadContext {
     throws EngineException {
 
     m_threadNumber = threadNumber;
-    m_threadMarker = MarkerFactory.getMarker("thread-" + threadNumber);
+    m_threadMarker = new ThreadLogMarker("thread-" + threadNumber);
 
     // Undocumented property. Added so Tom Barnes can investigate overhead
     // of data logging.
@@ -132,30 +129,15 @@ final class ThreadContextImplementation implements ThreadContext {
 
   @Override
   public void setCurrentRunNumber(int run) {
-    if (m_runMarker != null) {
-      m_threadMarker.remove(m_runMarker);
-      MarkerFactory.getIMarkerFactory().detachMarker(m_runMarker.getName());
-    }
-
-    if (run != -1) {
-      m_runMarker = MarkerFactory.getMarker("run-" + run);
-      m_threadMarker.add(m_runMarker);
-    }
+    m_threadMarker.setRun(
+      run != -1 ? MarkerFactory.getDetachedMarker("run-" + run) : null);
 
     m_runNumber = run;
   }
 
   /** Package scope for unit tests. */
   void setTestLogMarker(Marker marker) {
-    if (m_testMarker != null) {
-      m_threadMarker.remove(m_testMarker);
-    }
-
-    m_testMarker = marker;
-
-    if (marker != null) {
-      m_threadMarker.add(marker);
-    }
+    m_threadMarker.setTest(marker);
   }
 
   public SSLContextFactory getThreadSSLContextFactory() {
@@ -357,7 +339,6 @@ final class ThreadContextImplementation implements ThreadContext {
   }
 
   public void shutdown() {
-    MarkerFactory.getIMarkerFactory().detachMarker(m_threadMarker.getName());
     m_shutdown = true;
   }
 

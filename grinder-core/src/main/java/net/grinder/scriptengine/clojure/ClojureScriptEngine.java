@@ -21,7 +21,6 @@
 
 package net.grinder.scriptengine.clojure;
 
-import java.io.StringReader;
 import java.util.concurrent.Callable;
 
 import net.grinder.engine.common.EngineException;
@@ -29,7 +28,8 @@ import net.grinder.engine.common.ScriptLocation;
 import net.grinder.scriptengine.ScriptEngineService.ScriptEngine;
 import net.grinder.scriptengine.ScriptEngineService.WorkerRunnable;
 import net.grinder.scriptengine.ScriptExecutionException;
-import clojure.lang.Compiler;
+import clojure.java.api.Clojure;
+import clojure.lang.IFn;
 
 
 /**
@@ -51,7 +51,11 @@ class ClojureScriptEngine implements ScriptEngine {
     final Object result;
 
     try {
-      result = Compiler.loadFile(script.getFile().getPath());
+      // Clojure.var initialises the runtime; touching clojure.lang.Compiler
+      // first fails on Clojure 1.12 with RT and Compiler initialising each
+      // other.
+      final IFn loadFile = Clojure.var("clojure.core", "load-file");
+      result = loadFile.invoke(script.getFile().getPath());
     }
     catch (final Exception e) {
       throw new ClojureScriptExecutionException("Failed to load " + script, e);
@@ -104,11 +108,8 @@ class ClojureScriptEngine implements ScriptEngine {
 
   @Override
   public String getDescription() {
-    final String versionString =
-      "(let [v *clojure-version*] " +
-      "(format \"Clojure %s.%s.%s\" (v :major) (v :minor) (v :incremental)))";
-
-    return Compiler.load(new StringReader(versionString)).toString();
+    return "Clojure " +
+      Clojure.var("clojure.core", "clojure-version").invoke();
   }
 
   @Override

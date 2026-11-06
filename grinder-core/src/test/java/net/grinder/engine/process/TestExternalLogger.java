@@ -39,7 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
+import org.mockito.invocation.Invocation;
 import org.mockito.listeners.InvocationListener;
 import org.mockito.listeners.MethodInvocationReport;
 import org.slf4j.Logger;
@@ -76,12 +76,12 @@ public class TestExternalLogger {
     when(m_threadContextLocator.get()).thenReturn(m_threadContext);
     when(m_threadContext.getLogMarker()).thenReturn(m_marker);
 
-    final List<InvocationOnMock> invocations =
-      new ArrayList<InvocationOnMock>();
+    final List<Invocation> invocations =
+      new ArrayList<Invocation>();
 
     final InvocationListener listeners = new InvocationListener() {
       public void reportInvocation(MethodInvocationReport report) {
-        invocations.add((InvocationOnMock) report.getInvocation());
+        invocations.add((Invocation) report.getInvocation());
       }
     };
 
@@ -123,12 +123,13 @@ public class TestExternalLogger {
 
       m.invoke(logger, parameters.toArray());
 
-      final InvocationOnMock invocation = invocations.remove(0);
+      final Invocation invocation = invocations.remove(0);
 
       assertEquals(delegateMethod, invocation.getMethod());
 
       int i = 0;
-      final Object[] invokedArguments = invocation.getArguments();
+      // Raw arguments: Mockito expands a varargs array in getArguments().
+      final Object[] invokedArguments = invocation.getRawArguments();
 
       assertSame(m_marker, invokedArguments[0]);
 

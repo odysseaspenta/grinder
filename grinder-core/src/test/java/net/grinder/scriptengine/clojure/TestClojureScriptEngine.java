@@ -148,7 +148,7 @@ public class TestClojureScriptEngine extends AbstractJUnit4FileTestCase {
       new ScriptLocation(new Directory(getDirectory()), new File("my.clj"));
 
     createFile(script.getFile(),
-               "(fn [] (throw))");
+               "(fn [] (throw (NullPointerException.)))");
 
     final ScriptEngine scriptEngine =
       new ClojureScriptEngineService().createScriptEngine(script);
@@ -190,7 +190,7 @@ public class TestClojureScriptEngine extends AbstractJUnit4FileTestCase {
       new ScriptLocation(new Directory(getDirectory()), new File("my.clj"));
 
     createFile(script.getFile(),
-               "(fn [] (fn [] (throw)))");
+               "(fn [] (fn [] (throw (NullPointerException.))))");
 
     final ScriptEngine scriptEngine =
       new ClojureScriptEngineService().createScriptEngine(script);
