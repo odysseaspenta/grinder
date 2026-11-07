@@ -190,6 +190,8 @@ never shipped or overwritten:
 JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 GRINDERPROPERTIES=/opt/loadtests/myproject/grinder.properties
 JAVA_OPTS="-Xmx512m"
+GRINDER_LOG_LEVEL=info   # console and agent log level; default warn
+GRINDER_UI_SCALE=2       # Swing console scale on a HiDPI display
 ```
 
 A project directory of its own can source the shipped environment and start the agent with its own properties:

@@ -3,7 +3,7 @@
 # grinder.properties in the current directory. Extra arguments go to the agent.
 . "$(dirname "$0")/setGrinderEnv.sh"
 if [ -f "$GRINDERPROPERTIES" ]; then
-  exec java $JAVA_OPTS -cp "$CLASSPATH" net.grinder.Grinder "$GRINDERPROPERTIES" "$@"
+  exec java $GRINDER_JVM_OPTS -cp "$CLASSPATH" net.grinder.Grinder "$GRINDERPROPERTIES" "$@"
 else
-  exec java $JAVA_OPTS -cp "$CLASSPATH" net.grinder.Grinder "$@"
+  exec java $GRINDER_JVM_OPTS -cp "$CLASSPATH" net.grinder.Grinder "$@"
 fi
