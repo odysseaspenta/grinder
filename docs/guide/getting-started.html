@@ -282,38 +282,25 @@ java -classpath %CLASSPATH% net.grinder.TCPProxy -console -http > grinder.py
     </ul>
 
     <p><strong>Unix</strong></p>
+    <p>The distribution ships these scripts in its root directory, with
+    the execute bit set. <code>setGrinderEnv.sh</code> is sourced by the
+    other three; it sets <code>GRINDERPATH</code> to the installation
+    directory, <code>CLASSPATH</code> to <code>lib/grinder.jar</code>, puts
+    <code>$JAVA_HOME/bin</code> on the <code>PATH</code> when
+    <code>JAVA_HOME</code> is set, and defaults
+    <code>GRINDERPROPERTIES</code> to <code>grinder.properties</code> in the
+    installation directory. Site settings go in
+    <code>setGrinderEnv.local.sh</code> next to it, which is sourced first
+    and never overwritten:</p>
+<pre class="sh">
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+GRINDERPROPERTIES=/opt/loadtests/myproject/grinder.properties
+JAVA_OPTS="-Xmx512m"
+</pre>
      <ul>
-      <li>setGrinderEnv.sh
-<pre class="sh">
-#!/usr/bin/ksh
-GRINDERPATH=<em>(full path to grinder installation directory)</em>
-GRINDERPROPERTIES=<em>(full path to grinder.properties)</em>/grinder.properties
-CLASSPATH=$GRINDERPATH/lib/grinder.jar:$CLASSPATH
-JAVA_HOME=<em>(full path to java installation directory)</em>
-PATH=$JAVA_HOME/bin:$PATH
-export CLASSPATH PATH GRINDERPROPERTIES
-</pre>
-      </li>
-      <li>startAgent.sh
-<pre class="sh">
-#!/usr/bin/ksh
-. <em>(path to setGrinderEnv.sh)</em>/setGrinderEnv.sh
-java -classpath $CLASSPATH net.grinder.Grinder $GRINDERPROPERTIES
-</pre>
-      </li>
-      <li>startConsole.sh
-<pre class="sh">
-#!/usr/bin/ksh
-. <em>(path to setGrinderEnv.sh)</em>/setGrinderEnv.sh
-java -classpath $CLASSPATH net.grinder.Console
-</pre>
-      </li>
-      <li>startProxy.sh
-<pre class="sh">
-#!/usr/bin/ksh
-. <em>(path to setGrinderEnv.sh)</em>/setGrinderEnv.sh
-java -classpath $CLASSPATH net.grinder.TCPProxy -console -http > grinder.py
-</pre>
-      </li>
+      <li><code>startAgent.sh</code> runs <code>java net.grinder.Grinder $GRINDERPROPERTIES</code></li>
+      <li><code>startConsole.sh</code> runs <code>java net.grinder.Console</code>; <code>-classic</code> and <code>-headless</code> pass through</li>
+      <li><code>startProxy.sh</code> runs <code>java net.grinder.TCPProxy -console -http &gt; grinder.py</code></li>
+      <li><code>updateGrinder.sh <em>grinder-version-binary.zip</em> <em>installation</em></code> updates an unpacked installation to a new release: it replaces <code>lib/</code> (kept as <code>lib.previous/</code>), the shipped scripts and the release notes, and leaves properties, test scripts, <code>setGrinderEnv.local.sh</code>, logs, <code>etc/</code> and <code>examples/</code> alone</li>
      </ul>
   </section>

@@ -171,31 +171,39 @@ java -classpath %CLASSPATH% net.grinder.Console
 java -classpath %CLASSPATH% net.grinder.TCPProxy -console -http > grinder.py
 ```
 
-##< Unix
+## Unix
 
-### setGrinderEnv.sh 
-```#!/usr/bin/ksh
-GRINDERPATH=(full path to grinder installation directory)
-GRINDERPROPERTIES=(full path to grinder.properties)/grinder.properties
-CLASSPATH=$GRINDERPATH/lib/grinder.jar:$CLASSPATH
-JAVA_HOME=(full path to java installation directory)
-PATH=$JAVA_HOME/bin:$PATH
-export CLASSPATH PATH GRINDERPROPERTIES
+The distribution ships these as executable scripts in its root directory, so there is nothing to write:
+
+| Script | Does |
+|---|---|
+| `setGrinderEnv.sh` | Sourced by the others. Sets `GRINDERPATH` to the installation directory, `CLASSPATH` to `lib/grinder.jar`, puts `$JAVA_HOME/bin` first on the `PATH` when `JAVA_HOME` is set, and defaults `GRINDERPROPERTIES` to `grinder.properties` in the installation directory. |
+| `startConsole.sh` | `java net.grinder.Console`; arguments such as `-classic` or `-headless` are passed through. |
+| `startAgent.sh` | `java net.grinder.Grinder $GRINDERPROPERTIES`. |
+| `startProxy.sh` | `java net.grinder.TCPProxy -console -http > grinder.py`. |
+| `updateGrinder.sh` | Updates the installation to a new release, see below. |
+
+Put site settings in `setGrinderEnv.local.sh` next to `setGrinderEnv.sh`; it is sourced first when it exists and is
+never shipped or overwritten:
+
 ```
-### startAgent.sh 
-```#!/usr/bin/ksh
-. (path to setGrinderEnv.sh)/setGrinderEnv.sh
-java -classpath $CLASSPATH net.grinder.Grinder $GRINDERPROPERTIES
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+GRINDERPROPERTIES=/opt/loadtests/myproject/grinder.properties
+JAVA_OPTS="-Xmx512m"
 ```
-### startConsole.sh 
+
+A project directory of its own can source the shipped environment and start the agent with its own properties:
+
 ```
-#!/usr/bin/ksh
-. (path to setGrinderEnv.sh)/setGrinderEnv.sh 
-java -classpath $CLASSPATH net.grinder.Console
+#!/bin/bash
+GRINDERPROPERTIES=$(cd "$(dirname "$0")" && pwd)/grinder.properties
+. /opt/grinder/setGrinderEnv.sh
+java $JAVA_OPTS -cp "$CLASSPATH" net.grinder.Grinder "$GRINDERPROPERTIES"
 ```
-### startProxy.sh 
-```
-#!/usr/bin/ksh
-. (path to setGrinderEnv.sh)/setGrinderEnv.sh
-java -classpath $CLASSPATH net.grinder.TCPProxy -console -http > grinder.py
-```
+
+### Updating an installation
+
+`updateGrinder.sh <grinder-<version>-binary.zip> <installation directory>` replaces `lib/`, the shipped scripts and
+the release notes in an unpacked installation and leaves everything else (properties, scripts, `setGrinderEnv.local.sh`,
+logs, `etc/`, `examples/`) as it was. The previous `lib/` is kept as `lib.previous/` until you delete it, so a rollback is
+`rm -r lib && mv lib.previous lib`.
