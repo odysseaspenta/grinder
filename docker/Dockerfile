@@ -5,8 +5,6 @@
 #   cp grinder/target/grinder-*-binary.zip docker/
 #   docker build docker/ -t grinder:local
 #   docker run --rm -p 6372:6372 -p 6373:6373 grinder:local
-#
-# .github/workflows/build.yml does the same with the zip it just built.
 
 FROM eclipse-temurin:21-jdk-alpine AS build
 COPY grinder-*-binary.zip /tmp/dist/

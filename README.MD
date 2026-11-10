@@ -16,7 +16,7 @@ The Grinder is a framework for running test scripts across a number of machines 
     *   Provides script editing and distribution.
 
 # Download
-You can download the latest grinder version [here](https://github.com/cossme/grinder/releases/download/4.0.0/grinder-4.0.0-binary.zip)
+You can download the latest Grinder release from the [releases page](https://github.com/odysseaspenta/grinder/releases).
     
 # Grinder Architecture    
 
@@ -113,8 +113,8 @@ A Java 21 or later runtime on every machine that runs a console, an agent or the
 Java 21 and its test suite runs on Java 21 and 25 in CI. To build from source you also need Apache Maven 3.9 or later;
 `mvn -B verify` builds everything, runs the tests and produces `grinder/target/grinder-<version>-binary.zip`.
 
-The console is also published as a Docker image: `docker run --rm -p 6372:6372 -p 6373:6373 cossme/grinder:<version>`
-serves the web console on port 6373 and listens for agents on port 6372. `docker/Dockerfile` builds it from the zip.
+`docker/Dockerfile` builds a console image from the zip (its header gives the commands);
+`docker run --rm -p 6372:6372 -p 6373:6373 grinder:local` serves the web console on port 6373 and listens for agents on port 6372.
 
 # How to build the distribution
 

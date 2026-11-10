@@ -6,36 +6,55 @@ level: Index
 <section>
   <h1>Download The Grinder</h1>
 
-  <p>The Grinder can be downloaded from <a
-  href="{{ site.github.repository_url }}">SourceForge.net</a>.
-  The <a href="development/contributing.html#source">source code</a> is also available.
-  </p>
+  <p>Releases of The Grinder are published on the
+  <a href="{{ site.github.repository_url }}/releases">GitHub releases page</a>.
+  Each release has a single distribution zip,
+  <code>grinder-</code><em>version</em><code>-binary.zip</code>, which holds
+  everything needed to run The Grinder. The
+  <a href="development/contributing.html#source">source code</a> is in the
+  same GitHub repository.</p>
 
-  <p>The Grinder is distributed as two zip files which you should expand
-  using <code>unzip</code>, <a href="{{ site.data.links.winzip.href }}">WinZip</a> or
-  similar. Everything required to run The Grinder is in the zip file labelled
-  <code>grinder-</code><em>version</em><code>.zip</code>. The remaining
-  files that are needed to build The Grinder are distributed in the zip file
-  labelled <code>grinder-</code><em>version</em><code>-src.zip</code>;
-  these are mainly of interest to developers wanting to
-  <a href="development/contributing"> extend The Grinder</a>.
-  </p>
+  <p>Expand the zip with <code>unzip</code>,
+  <a href="{{ site.data.links.winzip.href }}">WinZip</a> or similar. It creates a
+  <code>grinder-</code><em>version</em> directory containing:</p>
+
+  <ul>
+    <li><code>lib/</code>: <code>grinder.jar</code> and the jar files it depends on.</li>
+    <li><code>startConsole.sh</code>, <code>startAgent.sh</code> and
+    <code>startProxy.sh</code>: start the console, an agent and the TCPProxy.
+    They read <code>setGrinderEnv.sh</code>; put site settings in
+    <code>setGrinderEnv.local.sh</code>.</li>
+    <li><code>updateGrinder.sh</code>: updates an unpacked installation to a
+    newer release zip, replacing <code>lib/</code> and the shipped scripts and
+    leaving your own files in place.</li>
+    <li><code>examples/</code>: example scripts and a sample
+    <code>grinder.properties</code>.</li>
+    <li><code>etc/</code>: the XSL and XSD files the TCPProxy uses to turn a
+    recording into a script.</li>
+    <li><code>contrib/</code>: contributed extras.</li>
+  </ul>
+
+  <p>The <a href="guide/getting-started.html">Getting Started</a> guide
+  explains what to do next.</p>
 </section>
 
 <section>
   <h1>What else do I need?</h1>
 
-  <p>To run The Grinder: <a href="{{ site.data.links.oracle.java.javase.href }}">Java Standard Edition6</a>, equivalent, or later</p>
+  <p>To run The Grinder: <a href="{{ site.data.links.oracle.java.javase.href }}">Java Standard Edition 21</a>, equivalent, or later.</p>
+
+  <p>To build it from source: Java 21 or later and
+  <a href="{{ site.data.links.mvn.href }}">Apache Maven</a> 3.9 or later.
+  <code>mvn -B verify</code> builds everything, runs the tests and writes the
+  distribution zip to <code>grinder/target/</code>.</p>
 </section>
 
 <section>
-  <h1>Downloading The Grinder using Maven</h1>
+  <h1>Using The Grinder with Maven</h1>
 
-  <p>Some users will find it preferable to use Maven to manage The
-  Grinder. On release, the jar files are deployed to the <a
-  href="{{ site.data.links.sonatype.oss.href }}">Sonatype</a> OSS Nexus repository, and
-  will be synchronised to <a href="{{ site.data.links.mvn.central.href }}">Maven
-  Central</a> soon afterwards. You can choose either to depend on
-  the the zip file, which should be identical to the Sourceforge
-  download, or the individual jar files.</p>
+  <p>The Grinder jar files are not published to Maven Central. To
+  depend on them from a Maven build, build The Grinder from the
+  <a href="development/contributing.html#source">source code</a> with
+  <code>mvn -B -DskipTests install</code>, which installs the jar files and
+  the distribution zip into your local Maven repository.</p>
 </section>

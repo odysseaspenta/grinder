@@ -289,8 +289,6 @@ mozilla:
 
 mvn:
   href: "http://maven.apache.org/"
-  central:
-    href: "http://search.maven.org"
 
 
 ncftp:
@@ -345,10 +343,6 @@ zephyrfalcon:
 slf4j:
   href: "http://www.slf4j.org/"
 
-sonatype:
-  href: "http://www.sonatype.org/"
-  oss:
-    href: "http://oss.sonatype.org/"
 
 
 sourceforge:

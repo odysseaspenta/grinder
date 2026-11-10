@@ -37,7 +37,7 @@ Build gotchas:
 - `grinder-core` depends on Spring Boot because `SpringConsoleFoundation` (which boots the console's Spring context) lives there. `grinder-console-service` and `grinder-web-console` depend on it too. One `spring-boot.version` property in the parent pins all three starters.
 - `grinder-console-service` uses non-standard source dirs: `src/`, `test/`, `resources/` (not `src/main/java`).
 - The `grinder` module produces no code; it assembles the binary distribution zip (`grinder/src/main/assembly/assembly.xml`) with `lib/grinder.jar` (manifest classpath pointing at sibling jars), `examples/`, `contrib/` and unpacked `.xsl`/`.xsd` files in `etc/`. Jython example scripts live in `grinder/examples/`.
-- `docker/Dockerfile` builds the console image from a distribution zip copied into `docker/` (the header says how); `build.yml` builds it from the zip it just produced and pushes it on a version tag. `release.yml` publishes a version tag to the Maven Central Portal through the `release` profile.
+- `docker/Dockerfile` builds the console image from a distribution zip copied into `docker/` (the header says how); CI does not build or publish it. Nothing publishes to Maven Central (no signing or Central Portal profile); the `io.github.cossme` groupId is a namespace this fork cannot publish under.
 
 ## Module map and how the pieces connect
 

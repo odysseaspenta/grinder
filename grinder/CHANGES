@@ -34,10 +34,9 @@ The Grinder 4.1.0
   unpacked installation to a new release zip, replacing lib/ and the
   shipped scripts and leaving everything else in place.
 
-  Builds publish to the Maven Central Portal (release.yml on a version
-  tag) instead of OSSRH, and the console Docker image is built from the
-  distribution zip on eclipse-temurin:21-jre instead of downloaded from a
-  snapshot repository. Travis CI configuration removed; GitHub Actions
+  docker/Dockerfile builds the console image from the distribution zip
+  on eclipse-temurin:21-jre instead of downloading it from a snapshot
+  repository. Travis CI configuration removed; GitHub Actions
   builds every push and pull request.
 
 The Grinder 3.13

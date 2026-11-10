@@ -199,9 +199,8 @@ java -Duser.language="es" net.grinder.Console
     the <a href="site:links">links page</a>.
     </p>
 
-    <p>On release, The Grinder jar files are deployed to the <a
-    href="{{ site.data.links.sonatype.oss.href }}">Sonatype</a> OSS Nexus repository, and
-    will be synchronised to <a href="{{ site.data.links.mvn.central.href }}">Maven
-    Central</a> soon afterwards.</p>
+    <p>The Grinder jar files are not published to Maven Central. Build
+    them from source with <code>mvn -B -DskipTests install</code> to put them
+    in your local Maven repository, then depend on them from there.</p>
 
   </section>
