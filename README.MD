@@ -17,12 +17,14 @@ The Grinder is a framework for running test scripts across a number of machines 
 
 # Download
 You can download the latest Grinder release from the [releases page](https://github.com/odysseaspenta/grinder/releases).
+
+The user guide, FAQ and script gallery are on the [documentation site](https://odysseaspenta.github.io/grinder/).
     
 # Grinder Architecture    
 
 As The Grinder is written in Java, each of these processes is a Java Virtual Machine (JVM).
 
-![The Grinder Processes](https://github.com/solcyr/grinder/raw/master/docs/images/processes.png)
+![The Grinder Processes](docs/images/processes.png)
 
 For heavy duty testing, you start an agent process on each of several load injector machines. The worker processes they launch can be 
 controlled and monitored using the console. There is little reason to run more than one agent on each load injector, but you can if
@@ -39,11 +41,11 @@ The script is executed many times in a typical testing scenario. Each worker pro
 and each worker thread calls the script a number of times. A single execution of a test script is called a _run_.
 
 You can write scripts for use with the Grinder by hand. There are a number of examples of how to do this in the
-[Script Gallery](https://cossme.github.io/grinder/guide/script-gallery.html). 
-See the [Scripts](https://cossme.github.io/grinder/guide/scripts.html) section for more details on how to create scripts.
+[Script Gallery](https://odysseaspenta.github.io/grinder/guide/script-gallery.html). 
+See the [Scripts](https://odysseaspenta.github.io/grinder/guide/scripts.html) section for more details on how to create scripts.
 
 If you are creating a script to test a web site or web application, you can use the 
-[TCPProxy](https://cossme.github.io/grinder/guide/tcpproxy.html) to record a browser session as a script.
+[TCPProxy](https://odysseaspenta.github.io/grinder/guide/tcpproxy.html) to record a browser session as a script.
 
 # Network communication
 
@@ -58,7 +60,7 @@ The worker processes will run to completion and not report to the console. This 
 out a test script without bothering to start the console.
 
 > To change the console addresses, set the `grinder.consoleHost` and `grinder.consolePort` properties in the 
-> [`grinder.properties`](https://cossme.github.io/grinder/guide/properties.html) file before starting The Grinder agents.
+> [`grinder.properties`](https://odysseaspenta.github.io/grinder/guide/properties.html) file before starting The Grinder agents.
 > The values should match those specified in the console options dialog.
 
 # Output
