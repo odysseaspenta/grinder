@@ -116,6 +116,10 @@ Java 21 and its test suite runs on Java 21 and 25 in CI. To build from source yo
 The console is also published as a Docker image: `docker run --rm -p 6372:6372 -p 6373:6373 cossme/grinder:<version>`
 serves the web console on port 6373 and listens for agents on port 6372. `docker/Dockerfile` builds it from the zip.
 
+# How to build the distribution
+
+mvn -o -DskipTests install
+
 # How do I start The Grinder?
 
 It's easy:
