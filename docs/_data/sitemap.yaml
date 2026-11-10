@@ -21,8 +21,6 @@ levels:
           #url: /grinder/development/changes.html
         #- title: To Do
           #url: /grinder/development/todo.html
-        - title: Maven Reports
-          url: /grinderhttps://mvnrepository.com/artifact/io.github.cossme
   - name: Faq
     children:
       - title: Questions
