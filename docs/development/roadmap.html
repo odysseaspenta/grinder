@@ -1,0 +1,129 @@
+---
+level: Index
+layout: grinder
+---
+
+  <section>
+    <h1>Roadmap</h1>
+
+    <p>Recommended changes after 4.1.0, most important first. Each one is a
+    candidate for its own <a href="{{ site.github.repository_url }}/issues">issue</a>
+    and pull request.</p>
+  </section>
+
+  <section id="console-security">
+    <h2>1. Protect the web console and REST API</h2>
+
+    <p>The embedded web server binds to every network interface unless
+    <code>grinder.console.httpHost</code> is set, and it has no
+    authentication. Anyone who can reach port 6373 can change console
+    properties, upload files and distribute them to agents, and start
+    workers. Because workers run whatever script they are given, that
+    amounts to running code on every connected agent.</p>
+
+    <ul>
+      <li>Default <code>grinder.console.httpHost</code> to
+      <code>127.0.0.1</code>, so exposing the console becomes a deliberate
+      choice.</li>
+      <li>Add optional authentication (Spring Security with HTTP Basic or a
+      token from a property) for the REST API and the web UI.</li>
+      <li>Document the risk on the <a href="../guide/properties.html">properties</a>
+      page and in the Docker instructions, which publish port 6373.</li>
+    </ul>
+
+    <p>Port 6372, the agent port, is also unauthenticated. Its protocol is
+    Java serialization, so it should be listed as trusted-network only, and
+    deserialization limited to Grinder message classes with an
+    <code>ObjectInputFilter</code>.</p>
+  </section>
+
+  <section id="project-metadata">
+    <h2>2. Finish moving project metadata off SourceForge</h2>
+
+    <p>The documentation now points at GitHub for source, issues and
+    contributions. The build still does not:</p>
+
+    <ul>
+      <li>The root <code>pom.xml</code> <code>url</code>, <code>scm</code>,
+      <code>issueManagement</code> and <code>mailingLists</code> elements
+      point at SourceForge and the original project.</li>
+      <li>The groupId <code>io.github.cossme</code> is a namespace this fork
+      cannot publish under. Changing it to <code>io.github.odysseaspenta</code>
+      affects anyone who installed 4.1.0 locally, so do it at a version
+      boundary (4.2.0) and record it in <code>CHANGES</code>.</li>
+      <li>The <code>sourceforge.*</code> and <code>mail.*</code> entries in
+      <code>docs/_data/links.yaml</code> that nothing references any more can
+      be deleted.</li>
+    </ul>
+  </section>
+
+  <section id="windows">
+    <h2>3. Ship Windows start scripts or stop documenting them</h2>
+
+    <p>The README and the user guide show <code>setGrinderEnv.cmd</code>,
+    <code>startAgent.cmd</code>, <code>startConsole.cmd</code> and
+    <code>startProxy.cmd</code>, but the distribution ships only the
+    <code>.sh</code> scripts. Either add <code>.cmd</code> equivalents to
+    the assembly, including a <code>setGrinderEnv.local.cmd</code> hook, or
+    describe them as examples to copy.</p>
+  </section>
+
+  <section id="release-workflow">
+    <h2>4. Automate releases to GitHub</h2>
+
+    <p>4.1.0 was released by hand. A workflow triggered by a
+    <code>v*</code> tag could run <code>mvn -B verify</code> on Java 21,
+    create the GitHub release and attach the binary zip and its SHA-256.
+    It needs only the built-in <code>GITHUB_TOKEN</code>: no Maven Central,
+    GPG or Docker Hub secrets.</p>
+  </section>
+
+  <section id="dependency-updates">
+    <h2>5. Keep dependencies current</h2>
+
+    <p>Enable Dependabot for the <code>maven</code> and
+    <code>github-actions</code> ecosystems, with Spring Boot, Jython and ASM
+    updates grouped so each update gets one pull request. CI already
+    builds on Java 21 and 25, so each update is tested.</p>
+  </section>
+
+  <section id="jython">
+    <h2>6. Plan for life after Jython 2.7</h2>
+
+    <p>Jython implements Python 2.7, which upstream Python no longer
+    supports, and Jython 3 is not ready. Scripts written for The Grinder
+    depend on it, so it cannot simply be removed. Options to evaluate:</p>
+
+    <ul>
+      <li>Keep Jython as the default, and make the Clojure and Java script
+      engines first-class, with gallery examples and documentation.</li>
+      <li>Add a GraalPy (Python 3) script engine next to Jython, through
+      the <code>META-INF/net.grinder.scriptengine</code> extension point,
+      and compare its instrumentation support and throughput with
+      <code>tools/perf</code>.</li>
+    </ul>
+  </section>
+
+  <section id="upstream-issues">
+    <h2>7. Triage open issues from the original project</h2>
+
+    <p>Some open issues on
+    <a href="https://github.com/cossme/grinder/issues">cossme/grinder</a>
+    may already be fixed by 4.1.0, and others still apply: #17, #18, #25,
+    #26, #27 and #30. Check each against this release, and copy the ones
+    that still apply into this repository's issue tracker.</p>
+  </section>
+
+  <section id="docs-cleanup">
+    <h2>8. Refresh the documentation</h2>
+
+    <ul>
+      <li>Many pages still describe The Grinder 3 and Java 1.4 to 8 era
+      tooling. Review the guide for JDK 21 behaviour, especially the FAQ
+      entries on JVM options and garbage collection.</li>
+      <li>Remove the leftover Apache Forrest <code>site:</code> links,
+      which do not resolve under Jekyll.</li>
+      <li>Add a documentation page for the web console, the default UI
+      since 4.0.</li>
+    </ul>
+  </section>
